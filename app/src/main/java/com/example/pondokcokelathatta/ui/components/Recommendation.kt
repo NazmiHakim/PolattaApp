@@ -18,8 +18,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.pondokcokelathatta.R
 import com.example.pondokcokelathatta.model.MenuItem
-import com.example.pondokcokelathatta.ui.theme.BrownAccent
 
 @Composable
 fun RecommendationSection(recommendations: List<MenuItem>) {
@@ -49,29 +49,37 @@ fun RecommendationCard(item: MenuItem) {
             .width(140.dp)
             .height(170.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = BrownAccent) // Warna sesuai desain
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent) // Membuat kontainer transparan untuk menampilkan gambar latar Box
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ) {
+        Box(modifier = Modifier.fillMaxSize()) {
             Image(
-                painter = painterResource(id = item.imageRes),
-                contentDescription = item.name,
-                modifier = Modifier
-                    .height(80.dp)
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp),
-                contentScale = ContentScale.Fit
+                painter = painterResource(id = R.drawable.recommendation), // Ini adalah gambar latar belakang baru
+                contentDescription = "Recommendation Background",
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
             )
-            Spacer(Modifier.height(12.dp))
-            Text(
-                text = item.name,
-                textAlign = TextAlign.Center,
-                fontWeight = FontWeight.Bold,
-                color = Color.White // Teks berwarna putih
-            )
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Image(
+                    painter = painterResource(id = item.imageRes),
+                    contentDescription = item.name,
+                    modifier = Modifier
+                        .height(80.dp)
+                        .fillMaxWidth()
+                        .padding(horizontal = 8.dp),
+                    contentScale = ContentScale.Fit
+                )
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    text = item.name,
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.White // Teks tetap putih
+                )
+            }
         }
     }
 }
