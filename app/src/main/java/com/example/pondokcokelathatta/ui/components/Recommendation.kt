@@ -35,14 +35,14 @@ fun RecommendationSection() {
 fun RecommendationCard(title: String) {
     Card(
         modifier = Modifier
-            .size(width = 120.dp, height = 160.dp)
-            .padding(end = 8.dp),
+            .size(width = 131.dp, height = 164.dp)
+            .padding(end = 10.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color(0xFFD7A477))
 
     ) {
         Column(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier.padding(30.dp),
             verticalArrangement = Arrangement.SpaceBetween,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {

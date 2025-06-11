@@ -1,8 +1,10 @@
 package com.example.pondokcokelathatta.ui.screens
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -15,21 +17,24 @@ import com.example.pondokcokelathatta.ui.components.RecommendationSection
 import com.example.pondokcokelathatta.ui.components.SearchBar
 import com.example.pondokcokelathatta.ui.components.TopBar
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun PolattaScreen() {
     val selectedTab = remember { mutableStateOf("Choco Series") }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.White)
+    Scaffold(
+        bottomBar = { BottomNavBar() }
     ) {
-        TopBar()
-        SearchBar()
-        RecommendationSection()
-        CategoryTabs(selectedTab)
-        MenuList(selectedTab.value)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color.White)
+        ) {
+            TopBar()
+            SearchBar()
+            RecommendationSection()
+            CategoryTabs(selectedTab)
+            MenuList(selectedTab.value)
+        }
     }
-
-    BottomNavBar()
 }
