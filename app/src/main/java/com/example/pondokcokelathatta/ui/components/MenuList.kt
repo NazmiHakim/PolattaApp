@@ -23,6 +23,7 @@ import com.example.pondokcokelathatta.ui.theme.TextPrimary
 
 @Composable
 fun MenuList(menuItems: List<MenuItem>) {
+    Spacer(Modifier.height(12.dp))
     LazyColumn(
         modifier = Modifier
             .padding(horizontal = 16.dp)

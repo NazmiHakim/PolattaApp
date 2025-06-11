@@ -63,7 +63,4 @@ object DummyData {
             imageRes = R.drawable.choco_milk // Ganti dengan drawable Anda
         )
     )
-
-    // Daftar kategori menu.
-    val menuCategories = listOf("Choco Series", "Cimory Series", "Matcha", "Choco Boo", "Basreng")
 }
