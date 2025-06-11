@@ -23,12 +23,17 @@ import com.example.pondokcokelathatta.ui.theme.BrownAccent
 
 @Composable
 fun RecommendationSection(recommendations: List<MenuItem>) {
-    Column(Modifier.padding(horizontal = 16.dp)) {
+    Column {
         Spacer(Modifier.height(18.dp))
-        Text("Rekomendasi", style = MaterialTheme.typography.titleLarge)
+        Text(
+            "Rekomendasi",
+            style = MaterialTheme.typography.titleLarge,
+            modifier = Modifier.padding(horizontal = 16.dp)
+        )
         Spacer(Modifier.height(8.dp))
         LazyRow(
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.spacedBy(16.dp),
+            contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
             items(recommendations) { item ->
                 RecommendationCard(item)
