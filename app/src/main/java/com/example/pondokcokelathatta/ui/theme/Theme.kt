@@ -10,24 +10,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
-import com.pondokcokelathatta.ui.theme.BrownAccent
-import com.pondokcokelathatta.ui.theme.BrownLight
-import com.pondokcokelathatta.ui.theme.BrownPrimary
-import com.pondokcokelathatta.ui.theme.OrangeAccent
-import com.pondokcokelathatta.ui.theme.TextPrimary
-import com.pondokcokelathatta.ui.theme.WhiteCream
 
+// Skema warna terang untuk aplikasi
 private val LightColorScheme = lightColorScheme(
     primary = BrownPrimary,
     secondary = BrownAccent,
     tertiary = OrangeAccent,
-    background = BrownLight,
+    background = WhiteCream, // Menggunakan WhiteCream untuk latar belakang yang lebih terang
     surface = WhiteCream,
     onPrimary = Color.White,
     onSecondary = Color.White,
     onTertiary = Color.White,
     onBackground = TextPrimary,
-    onSurface = TextPrimary,
+    onSurface = TextPrimary
 )
 
 @Composable
@@ -35,7 +30,7 @@ fun PondokCokelatHattaTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
-    val colorScheme = LightColorScheme // Saat ini hanya mendukung light theme
+    val colorScheme = LightColorScheme // Saat ini hanya mendukung tema terang
     val view = LocalView.current
     if (!view.isInEditMode) {
         SideEffect {

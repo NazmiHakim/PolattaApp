@@ -1,13 +1,16 @@
-package com.pondokcokelathatta.ui.theme
+package com.example.pondokcokelathatta.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Brown_80 = Color(0xFF6F4E37) // Main Brown
-val Brown_40 = Color(0xFF8B6B55)
-val Cream_80 = Color(0xFFF5EFE6) // Background
-val Cream_40 = Color(0xFFE4DACE)
-val TextColor = Color(0xFF4B3832)
-val MutedText = Color(0xFF856F67)
+// Warna utama yang digunakan dalam tema aplikasi
+val BrownPrimary = Color(0xFF6F4E37)
+val BrownAccent = Color(0xFF8B6B55)
+val OrangeAccent = Color(0xFFD7A477) // Warna dari kartu rekomendasi untuk aksen
+val WhiteCream = Color(0xFFF5EFE6)   // Warna latar belakang utama
+val TextPrimary = Color(0xFF4B3832)
+val TextSecondary = Color(0xFF856F67)
+
+// Warna lain yang digunakan di UI
 val WhitePure = Color(0xFFFFFFFF)
 val SelectedTab = Color(0xFF6F4E37)
 val UnselectedTab = Color(0xFFAD9B8F)

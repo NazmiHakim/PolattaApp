@@ -5,9 +5,8 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.pondokcokelathatta.ui.theme.TextPrimary
-import com.pondokcokelathatta.ui.theme.TextSecondary
 
+// Set tipografi default untuk aplikasi
 val Typography = Typography(
     bodyLarge = TextStyle(
         fontFamily = FontFamily.Default,
@@ -15,7 +14,7 @@ val Typography = Typography(
         fontSize = 16.sp,
         lineHeight = 24.sp,
         letterSpacing = 0.5.sp,
-        color = TextPrimary
+        color = TextPrimary // Menggunakan warna teks utama
     ),
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
@@ -23,7 +22,7 @@ val Typography = Typography(
         fontSize = 22.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp,
-        color = TextPrimary
+        color = TextPrimary // Menggunakan warna teks utama
     ),
     labelSmall = TextStyle(
         fontFamily = FontFamily.Default,
@@ -31,6 +30,6 @@ val Typography = Typography(
         fontSize = 11.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp,
-        color = TextSecondary
+        color = TextSecondary // Menggunakan warna teks sekunder
     )
 )
