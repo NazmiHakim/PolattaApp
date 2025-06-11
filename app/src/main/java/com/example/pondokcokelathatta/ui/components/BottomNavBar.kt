@@ -1,43 +1,45 @@
 package com.example.pondokcokelathatta.ui.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.*
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import com.example.pondokcokelathatta.ui.theme.BrownPrimary
+import com.example.pondokcokelathatta.ui.theme.TextSecondary
 
 @Composable
 fun BottomNavBar() {
-    val selectedIndex = remember { mutableStateOf(0) }
+    val selectedIndex = remember { mutableIntStateOf(0) }
+    val items = listOf("Home", "Order", "Message", "Profile")
+    val icons = listOf(Icons.Default.Home, Icons.Default.ShoppingCart, Icons.Default.Email, Icons.Default.Person)
 
-    NavigationBar {
-        NavigationBarItem(
-            icon = { Icon(Icons.Default.Home, contentDescription = "Home") },
-            label = { Text("Home") },
-            selected = selectedIndex.value == 0,
-            onClick = { selectedIndex.value = 0 }
-        )
-        NavigationBarItem(
-            icon = { Icon(Icons.Default.ShoppingCart, contentDescription = "Order") },
-            label = { Text("Order") },
-            selected = selectedIndex.value == 1,
-            onClick = { selectedIndex.value = 1 }
-        )
-        NavigationBarItem(
-            icon = { Icon(Icons.Default.Email, contentDescription = "Message") },
-            label = { Text("Message") },
-            selected = selectedIndex.value == 2,
-            onClick = { selectedIndex.value = 2 }
-        )
-        NavigationBarItem(
-            icon = { Icon(Icons.Default.Person, contentDescription = "Profile") },
-            label = { Text("Profile") },
-            selected = selectedIndex.value == 3,
-            onClick = { selectedIndex.value = 3 }
-        )
+    NavigationBar(
+        containerColor = MaterialTheme.colorScheme.surface
+    ) {
+        items.forEachIndexed { index, screen ->
+            NavigationBarItem(
+                icon = { Icon(icons[index], contentDescription = screen) },
+                label = { Text(screen) },
+                selected = selectedIndex.intValue == index,
+                onClick = { selectedIndex.intValue = index },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = BrownPrimary,
+                    selectedTextColor = BrownPrimary,
+                    unselectedIconColor = TextSecondary,
+                    unselectedTextColor = TextSecondary,
+                    indicatorColor = MaterialTheme.colorScheme.background // Warna indicator transparan
+                )
+            )
+        }
     }
 }

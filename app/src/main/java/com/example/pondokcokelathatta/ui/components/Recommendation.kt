@@ -1,53 +1,72 @@
 package com.example.pondokcokelathatta.ui.components
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocalCafe
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.pondokcokelathatta.model.MenuItem
+import com.example.pondokcokelathatta.ui.theme.BrownAccent
 
 @Composable
-fun RecommendationSection() {
-    Column(Modifier.padding(16.dp)) {
-        Text("Rekomendasi", fontWeight = FontWeight.Bold)
+fun RecommendationSection(recommendations: List<MenuItem>) {
+    Column(Modifier.padding(horizontal = 16.dp)) {
+        Spacer(Modifier.height(18.dp))
+        Text("Rekomendasi", style = MaterialTheme.typography.titleLarge)
         Spacer(Modifier.height(8.dp))
-        LazyRow {
-            items(listOf("Choco Milk", "Choco Latte", "Choco Boo")) {
-                RecommendationCard(it)
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(recommendations) { item ->
+                RecommendationCard(item)
             }
         }
     }
 }
 
 @Composable
-fun RecommendationCard(title: String) {
+fun RecommendationCard(item: MenuItem) {
     Card(
         modifier = Modifier
-            .size(width = 131.dp, height = 164.dp)
-            .padding(end = 10.dp),
+            .width(140.dp)
+            .height(170.dp),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFFD7A477))
-
+        colors = CardDefaults.cardColors(containerColor = BrownAccent) // Warna sesuai desain
     ) {
         Column(
-            modifier = Modifier.padding(30.dp),
-            verticalArrangement = Arrangement.SpaceBetween,
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Icon(Icons.Default.LocalCafe, contentDescription = null, modifier = Modifier.size(64.dp))
-            Text(title, textAlign = TextAlign.Center, fontWeight = FontWeight.Bold)
+            Image(
+                painter = painterResource(id = item.imageRes),
+                contentDescription = item.name,
+                modifier = Modifier
+                    .height(80.dp)
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                contentScale = ContentScale.Fit
+            )
+            Spacer(Modifier.height(12.dp))
+            Text(
+                text = item.name,
+                textAlign = TextAlign.Center,
+                fontWeight = FontWeight.Bold,
+                color = Color.White // Teks berwarna putih
+            )
         }
     }
 }
