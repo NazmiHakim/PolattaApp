@@ -57,7 +57,7 @@ fun MenuCard(item: MenuItem) {
                 painter = painterResource(id = item.imageRes),
                 contentDescription = item.name,
                 modifier = Modifier
-                    .size(100.dp)
+                    .size(107.dp)
                     .padding(end = 16.dp),
                 contentScale = ContentScale.Crop
             )

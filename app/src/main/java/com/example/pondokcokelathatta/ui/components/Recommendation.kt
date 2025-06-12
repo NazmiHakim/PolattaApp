@@ -46,8 +46,8 @@ fun RecommendationSection(recommendations: List<MenuItem>) {
 fun RecommendationCard(item: MenuItem) {
     Card(
         modifier = Modifier
-            .width(140.dp)
-            .height(170.dp),
+            .width(150.dp)
+            .height(180.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(containerColor = Color.Transparent) // Membuat kontainer transparan untuk menampilkan gambar latar Box
     ) {
@@ -67,17 +67,18 @@ fun RecommendationCard(item: MenuItem) {
                     painter = painterResource(id = item.imageRes),
                     contentDescription = item.name,
                     modifier = Modifier
-                        .height(80.dp)
+                        .height(140.dp)
                         .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
+                        .padding(bottom = 1.dp),
                     contentScale = ContentScale.Fit
                 )
-                Spacer(Modifier.height(12.dp))
                 Text(
                     text = item.name,
                     textAlign = TextAlign.Center,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White // Teks tetap putih
+                    color = Color.White, // Teks tetap putih
+                    modifier = Modifier
+                        .padding(bottom = 14.dp)
                 )
             }
         }
