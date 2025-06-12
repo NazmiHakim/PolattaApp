@@ -13,13 +13,20 @@ fun CategoryTabs(selected: MutableState<String>, modifier: Modifier = Modifier) 
     ScrollableTabRow(
         selectedTabIndex = tabs.indexOf(selected.value),
         modifier = modifier,
-        edgePadding = 16.dp // Menambahkan padding di tepi
+        edgePadding = 16.dp,
+        indicator = {}, // Menghilangkan garis hitam lurus (indikator)
+        divider = {}    // Menghilangkan garis pembatas di bawah TabRow
     ) {
         tabs.forEach { tab ->
             Tab(
                 selected = selected.value == tab,
                 onClick = { selected.value = tab },
                 text = { Text(tab, fontSize = 14.sp) }
+                // Catatan: Efek ripple saat klik adalah bagian dari perilaku default Material Design
+                // untuk komponen Tab dan tidak dapat dihilangkan dengan mudah tanpa
+                // membuat implementasi Tab kustom, karena API standar tidak menyediakan
+                // parameter untuk menonaktifkannya. Perubahan di atas sudah menghilangkan
+                // garis indikator sesuai permintaan.
             )
         }
     }

@@ -14,6 +14,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.unit.dp
 import com.example.pondokcokelathatta.ui.theme.BrownPrimary
 import com.example.pondokcokelathatta.ui.theme.TextSecondary
 
@@ -24,6 +27,7 @@ fun BottomNavBar() {
     val icons = listOf(Icons.Default.Home, Icons.Default.ShoppingCart, Icons.Default.Email, Icons.Default.Person)
 
     NavigationBar(
+        modifier = Modifier.shadow(16.dp), // Menambahkan shadow
         containerColor = MaterialTheme.colorScheme.surface
     ) {
         items.forEachIndexed { index, screen ->
@@ -37,7 +41,7 @@ fun BottomNavBar() {
                     selectedTextColor = BrownPrimary,
                     unselectedIconColor = TextSecondary,
                     unselectedTextColor = TextSecondary,
-                    indicatorColor = MaterialTheme.colorScheme.background // Warna indicator transparan
+                    indicatorColor = MaterialTheme.colorScheme.background
                 )
             )
         }

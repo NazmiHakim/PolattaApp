@@ -38,7 +38,7 @@ fun MenuCard(item: MenuItem) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(160.dp)
+            .height(165.dp) // Menggunakan tinggi original agar tata letak tidak sempit
     ) {
         Image(
             painter = painterResource(id = R.drawable.menu_card),
@@ -57,42 +57,51 @@ fun MenuCard(item: MenuItem) {
                 painter = painterResource(id = item.imageRes),
                 contentDescription = item.name,
                 modifier = Modifier
-                    .size(95.dp)
+                    .size(100.dp)
                     .padding(end = 16.dp),
                 contentScale = ContentScale.Crop
             )
 
+            // Kolom ini akan mengatur posisi teks di atas dan harga di bawah
             Column(
-                modifier = Modifier.weight(1f),
-                verticalArrangement = Arrangement.Center
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(), // Memastikan kolom mengisi seluruh tinggi yang tersedia
+                verticalArrangement = Arrangement.SpaceBetween // Mendorong konten ke atas dan bawah
             ) {
-                Text(
-                    text = item.name,
-                    fontWeight = FontWeight.Bold,
-                    color = TextPrimary,
-                    fontSize = 16.sp
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = item.description,
-                    fontSize = 12.sp,
-                    color = TextSecondary,
-                    lineHeight = 16.sp
-                )
-                Spacer(Modifier.height(8.dp))
+                // Konten Atas: Nama dan Deskripsi
+                Column(modifier = Modifier.padding(top = 6.dp)) {
+                    Text(
+                        text = item.name,
+                        fontWeight = FontWeight.Bold,
+                        color = TextPrimary,
+                        fontSize = 19.sp
+                    )
+                    Spacer(Modifier.height(4.dp))
+                    Text(
+                        text = item.description,
+                        fontSize = 12.sp,
+                        color = TextSecondary,
+                        lineHeight = 16.sp
+                    )
+                }
+
+                // Konten Bawah: Harga
                 Text(
                     text = "Rp ${"%,d".format(item.price).replace(',', '.')}",
                     fontWeight = FontWeight.Bold,
                     color = TextPrimary,
-                    fontSize = 14.sp
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(bottom = 14.dp)
                 )
             }
 
-            // --- PERUBAHAN DI SINI ---
-            // Mengganti IconButton dengan komponen PlusButton yang baru dibuat.
+            // Tombol Tambah diposisikan secara manual ke bawah
             PlusButton(
                 onClick = { /* TODO: Tambahkan logika untuk aksi tombol ini */ },
-                modifier = Modifier.size(30.dp)
+                modifier = Modifier
+                    .size(30.dp)
+                    .align(Alignment.Bottom) // Memposisikan tombol ini ke bawah di dalam Row
             )
         }
     }
