@@ -93,8 +93,7 @@ fun MenuCard(item: MenuItem) {
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .fillMaxHeight(),
-                verticalArrangement = Arrangement.SpaceBetween // Mendorong konten untuk mengisi ruang
+                    .fillMaxHeight()
             ) {
                 // Konten Atas: Nama dan Deskripsi
                 Column(modifier = Modifier.padding(top = 6.dp)) {
@@ -113,6 +112,8 @@ fun MenuCard(item: MenuItem) {
                     )
                 }
 
+                Spacer(Modifier.height(8.dp)) // Jarak antara deskripsi dan tombol
+
                 // Konten Tengah: Tombol "Tambah" atau pemilih kuantitas
                 if (quantity == 0) {
                     OutlinedButton(
@@ -123,53 +124,64 @@ fun MenuCard(item: MenuItem) {
                         Text("Tambah")
                     }
                 } else {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(10.dp)
+                    OutlinedButton(
+                        onClick = { /* Aksi di-handle oleh tombol di dalam */ },
+                        modifier = Modifier.height(34.dp),
+                        contentPadding = PaddingValues(horizontal = 6.dp) // Padding dihilangkan
                     ) {
-                        // Tombol Minus
-                        Button(
-                            onClick = { if (quantity > 0) quantity-- },
-                            modifier = Modifier.size(26.dp),
-                            shape = CircleShape,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = BrownPrimary
-                            ),
-                            contentPadding = PaddingValues(0.dp)
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
-                            Icon(
-                                imageVector = Icons.Default.Remove,
-                                contentDescription = "Kurangi Kuantitas",
-                                tint = WhiteCream
-                            )
-                        }
+                            // Tombol Minus
+                            Button(
+                                onClick = { if (quantity > 0) quantity-- },
+                                modifier = Modifier.size(26.dp),
+                                shape = CircleShape,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = BrownPrimary
+                                ),
+                                contentPadding = PaddingValues(0.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Remove,
+                                    contentDescription = "Kurangi Kuantitas",
+                                    tint = WhiteCream,
+                                    modifier = Modifier.size(16.dp) // Mengubah ukuran ikon
+                                )
+                            }
 
-                        // Teks Kuantitas
-                        Text(
-                            text = "$quantity",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 18.sp,
-                            color = TextPrimary
-                        )
-
-                        // Tombol Plus
-                        Button(
-                            onClick = { quantity++ },
-                            modifier = Modifier.size(26.dp),
-                            shape = CircleShape,
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = BrownPrimary
-                            ),
-                            contentPadding = PaddingValues(0.dp)
-                        ) {
-                            Icon(
-                                imageVector = Icons.Default.Add,
-                                contentDescription = "Tambah Kuantitas",
-                                tint = WhiteCream
+                            // Teks Kuantitas
+                            Text(
+                                text = "$quantity",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 18.sp,
+                                color = TextPrimary
                             )
+
+                            // Tombol Plus
+                            Button(
+                                onClick = { quantity++ },
+                                modifier = Modifier.size(26.dp),
+                                shape = CircleShape,
+                                colors = ButtonDefaults.buttonColors(
+                                    containerColor = BrownPrimary
+                                ),
+                                contentPadding = PaddingValues(0.dp)
+                            ) {
+                                Icon(
+                                    imageVector = Icons.Default.Add,
+                                    contentDescription = "Tambah Kuantitas",
+                                    tint = WhiteCream,
+                                    modifier = Modifier.size(16.dp) // Mengubah ukuran ikon
+                                )
+                            }
                         }
                     }
                 }
+
+                // Spacer ini akan mendorong harga ke bagian bawah
+                Spacer(Modifier.weight(1f))
 
                 // Konten Bawah: Harga
                 Text(
