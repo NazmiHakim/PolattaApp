@@ -131,7 +131,7 @@ fun MenuCard(item: MenuItem) {
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(10.dp)
+                            horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             // Tombol Minus
                             Button(
@@ -155,7 +155,7 @@ fun MenuCard(item: MenuItem) {
                             Text(
                                 text = "$quantity",
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 18.sp,
+                                fontSize = 14.sp,
                                 color = TextPrimary
                             )
 
