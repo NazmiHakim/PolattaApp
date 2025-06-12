@@ -4,7 +4,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -12,7 +11,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pondokcokelathatta.R
@@ -37,22 +35,18 @@ fun MenuList(menuItems: List<MenuItem>) {
 
 @Composable
 fun MenuCard(item: MenuItem) {
-    // Box digunakan untuk menumpuk gambar latar belakang dan konten.
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(126.dp) // Menggunakan tinggi 126dp sesuai permintaan Anda.
+            .height(160.dp)
     ) {
-        // Gambar latar belakang untuk kartu menu.
         Image(
-            // Pastikan Anda telah menambahkan 'menu_card.png' ke folder drawable Anda.
             painter = painterResource(id = R.drawable.menu_card),
             contentDescription = "Menu item background",
             modifier = Modifier.fillMaxSize(),
-            contentScale = ContentScale.FillBounds // Memastikan gambar mengisi seluruh area Box.
+            contentScale = ContentScale.FillBounds
         )
 
-        // Konten (gambar minuman, teks, tombol) ditempatkan di atas latar belakang.
         Row(
             modifier = Modifier
                 .fillMaxSize()
@@ -63,12 +57,11 @@ fun MenuCard(item: MenuItem) {
                 painter = painterResource(id = item.imageRes),
                 contentDescription = item.name,
                 modifier = Modifier
-                    .size(80.dp)
-                    .padding(end = 12.dp),
-                contentScale = ContentScale.Fit
+                    .size(95.dp)
+                    .padding(end = 16.dp),
+                contentScale = ContentScale.Crop
             )
 
-            // Kolom untuk nama, deskripsi, dan harga.
             Column(
                 modifier = Modifier.weight(1f),
                 verticalArrangement = Arrangement.Center
@@ -84,12 +77,9 @@ fun MenuCard(item: MenuItem) {
                     text = item.description,
                     fontSize = 12.sp,
                     color = TextSecondary,
-                    maxLines = 2,
-                    overflow = TextOverflow.Ellipsis,
                     lineHeight = 16.sp
                 )
                 Spacer(Modifier.height(8.dp))
-                // Memformat harga agar sesuai dengan format "Rp 13.000"
                 Text(
                     text = "Rp ${"%,d".format(item.price).replace(',', '.')}",
                     fontWeight = FontWeight.Bold,
@@ -98,17 +88,12 @@ fun MenuCard(item: MenuItem) {
                 )
             }
 
-            // Tombol plus di sebelah kanan.
-            IconButton(
+            // --- PERUBAHAN DI SINI ---
+            // Mengganti IconButton dengan komponen PlusButton yang baru dibuat.
+            PlusButton(
                 onClick = { /* TODO: Tambahkan logika untuk aksi tombol ini */ },
-                modifier = Modifier.size(32.dp)
-            ) {
-                Image(
-                    // Pastikan Anda telah menambahkan 'button_plus.png' ke folder drawable Anda.
-                    painter = painterResource(id = R.drawable.button_plus),
-                    contentDescription = "Add"
-                )
-            }
+                modifier = Modifier.size(30.dp)
+            )
         }
     }
 }
