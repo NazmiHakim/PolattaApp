@@ -42,10 +42,11 @@ fun PolattaScreen() {
                 item { SearchBar() }
                 item { RecommendationSection(DummyData.recommendations) }
                 item {
+                    Spacer(modifier = Modifier.height(32.dp))
                     Text(
                         text = "Menu",
                         style = MaterialTheme.typography.titleLarge,
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+                        modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }
                 item { CategoryTabs(selectedTab) }
