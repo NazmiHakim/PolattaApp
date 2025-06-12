@@ -13,54 +13,48 @@ object DummyData {
         MenuItem(
             name = "Choco Milk",
             description = "Espresso dengan cokelat dan susu steamed.",
-            price = 25,
+            price = 25000,
             imageRes = R.drawable.choco_milk // Ganti dengan drawable Anda
         ),
         MenuItem(
             name = "Choco Latte",
             description = "Espresso dengan sedikit susu atau busa.",
-            price = 30,
+            price = 30000,
             imageRes = R.drawable.choco_milk // Ganti dengan drawable Anda
         ),
         MenuItem(
             name = "Choco Breeze",
             description = "Espresso dengan banyak susu steamed.",
-            price = 28,
+            price = 28000,
             imageRes = R.drawable.choco_milk // Ganti dengan drawable Anda
         )
     )
 
-    // Daftar semua item menu yang tersedia.
+    // Daftar semua item menu yang tersedia (diperbarui sesuai screenshot).
     val menuItems = listOf(
         MenuItem(
             name = "Choco Milk",
-            description = "Espresso dengan cokelat dan susu steamed...",
-            price = 25,
-            imageRes = R.drawable.choco_milk // Ganti dengan drawable Anda
+            description = "Double espresso and water, served cold",
+            price = 13000,
+            imageRes = R.drawable.choco_milk // Pastikan drawable ini ada
         ),
         MenuItem(
-            name = "Choco Latte",
-            description = "Espresso dengan sedikit susu atau busa.",
-            price = 30,
-            imageRes = R.drawable.choco_milk // Ganti dengan drawable Anda
+            name = "Choco Milk",
+            description = "Double espresso and water, served cold",
+            price = 13000,
+            imageRes = R.drawable.choco_milk // Pastikan drawable ini ada
         ),
         MenuItem(
-            name = "Choco Breeze",
-            description = "Espresso dengan banyak susu steamed.",
-            price = 28,
-            imageRes = R.drawable.choco_milk // Ganti dengan drawable Anda
+            name = "Choco Milk",
+            description = "Double espresso and water, served cold",
+            price = 13000,
+            imageRes = R.drawable.choco_milk // Pastikan drawable ini ada
         ),
         MenuItem(
-            name = "Café con Leche",
-            description = "Mirip dengan latte, dibuat dengan kopi kental.",
-            price = 24,
-            imageRes = R.drawable.choco_milk // Ganti dengan drawable Anda
-        ),
-        MenuItem(
-            name = "Café Cubano",
-            description = "Espresso dengan gula, menghasilkan kopi manis.",
-            price = 20,
-            imageRes = R.drawable.choco_milk // Ganti dengan drawable Anda
+            name = "Choco Milk",
+            description = "Double espresso and water, served cold",
+            price = 13000,
+            imageRes = R.drawable.choco_milk // Pastikan drawable ini ada
         )
     )
 }
