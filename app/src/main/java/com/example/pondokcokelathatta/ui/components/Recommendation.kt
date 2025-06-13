@@ -1,6 +1,7 @@
 package com.example.pondokcokelathatta.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -22,7 +23,7 @@ import com.example.pondokcokelathatta.R
 import com.example.pondokcokelathatta.model.MenuItem
 
 @Composable
-fun RecommendationSection(recommendations: List<MenuItem>) {
+fun RecommendationSection(recommendations: List<MenuItem>, onItemClick: (MenuItem) -> Unit) { // Tambahkan parameter onItemClick
     Column {
         Spacer(Modifier.height(18.dp))
         Text(
@@ -36,21 +37,23 @@ fun RecommendationSection(recommendations: List<MenuItem>) {
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) {
             items(recommendations) { item ->
-                RecommendationCard(item)
+                RecommendationCard(item, onClick = { onItemClick(item) }) // Pass click listener
             }
         }
     }
 }
 
 @Composable
-fun RecommendationCard(item: MenuItem) {
+fun RecommendationCard(item: MenuItem, onClick: () -> Unit) { // Tambahkan parameter onClick
     Card(
         modifier = Modifier
             .width(150.dp)
-            .height(180.dp),
+            .height(180.dp)
+            .clickable(onClick = onClick), // Tambahkan modifier clickable
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.Transparent) // Membuat kontainer transparan untuk menampilkan gambar latar Box
+        colors = CardDefaults.cardColors(containerColor = Color.Transparent)
     ) {
+
         Box(modifier = Modifier.fillMaxSize()) {
             Image(
                 painter = painterResource(id = R.drawable.recommendation), // Ini adalah gambar latar belakang baru

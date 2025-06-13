@@ -1,3 +1,5 @@
+# gradle/libs.versions.toml
+
 [versions]
 agp = "8.10.0"
 kotlin = "2.0.21"
@@ -11,7 +13,10 @@ composeBom = "2024.09.00"
 protoliteWellKnownTypes = "18.0.1"
 navigationCommonAndroid = "2.9.0"
 navigationRuntimeAndroid = "2.9.0"
-navigationComposeJvmstubs = "2.9.0"
+# Hapus atau beri komentar pada baris ini
+# navigationComposeJvmstubs = "2.9.0" 
+# Tambahkan baris ini
+navigationCompose = "2.9.0"
 carUiLib = "2.6.0"
 
 [libraries]
@@ -32,11 +37,13 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 protolite-well-known-types = { group = "com.google.firebase", name = "protolite-well-known-types", version.ref = "protoliteWellKnownTypes" }
 androidx-navigation-common-android = { group = "androidx.navigation", name = "navigation-common-android", version.ref = "navigationCommonAndroid" }
 androidx-navigation-runtime-android = { group = "androidx.navigation", name = "navigation-runtime-android", version.ref = "navigationRuntimeAndroid" }
-androidx-navigation-compose-jvmstubs = { group = "androidx.navigation", name = "navigation-compose-jvmstubs", version.ref = "navigationComposeJvmstubs" }
+# Hapus atau beri komentar pada baris ini
+# androidx-navigation-compose-jvmstubs = { group = "androidx.navigation", name = "navigation-compose-jvmstubs", version.ref = "navigationComposeJvmstubs" }
+# Tambahkan baris ini
+androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
 car-ui-lib = { group = "com.android.car.ui", name = "car-ui-lib", version.ref = "carUiLib" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-

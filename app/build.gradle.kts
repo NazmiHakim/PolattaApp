@@ -51,8 +51,13 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.protolite.well.known.types)
     implementation(libs.androidx.navigation.common.android)
+
     implementation(libs.androidx.navigation.runtime.android)
-    implementation(libs.androidx.navigation.compose.jvmstubs)
+    // Ganti baris ini
+    // implementation(libs.androidx.navigation.compose.jvmstubs)
+    // dengan baris ini
+    implementation(libs.androidx.navigation.compose)
+
     implementation(libs.car.ui.lib)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

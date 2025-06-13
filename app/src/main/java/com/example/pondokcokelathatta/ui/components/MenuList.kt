@@ -1,34 +1,16 @@
 package com.example.pondokcokelathatta.ui.components
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Remove
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -43,29 +25,31 @@ import com.example.pondokcokelathatta.ui.theme.TextPrimary
 import com.example.pondokcokelathatta.ui.theme.TextSecondary
 import com.example.pondokcokelathatta.ui.theme.WhiteCream
 
-@Composable
-fun MenuList(menuItems: List<MenuItem>) {
-    Spacer(Modifier.height(12.dp))
-    LazyColumn(
-        modifier = Modifier
-            .padding(horizontal = 16.dp)
-            .fillMaxHeight(),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        items(menuItems) { item ->
-            MenuCard(item)
+/**
+ * Extension function untuk LazyListScope yang menambahkan daftar item menu.
+ * Ini memungkinkan kita untuk memasukkan daftar item ke dalam LazyColumn yang ada.
+ */
+fun LazyListScope.menuList(
+    menuItems: List<MenuItem>,
+    onItemClick: (MenuItem) -> Unit
+) {
+    items(menuItems) { item ->
+        // Padding ditambahkan di sini untuk setiap kartu
+        Box(Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
+            MenuCard(item, onClick = { onItemClick(item) })
         }
     }
 }
 
 @Composable
-fun MenuCard(item: MenuItem) {
+fun MenuCard(item: MenuItem, onClick: () -> Unit) {
     var quantity by remember { mutableIntStateOf(0) }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(165.dp) // Menggunakan tinggi original agar tata letak tidak sempit
+            .height(165.dp)
+            .clickable(onClick = onClick)
     ) {
         Image(
             painter = painterResource(id = R.drawable.menu_card),
@@ -89,13 +73,11 @@ fun MenuCard(item: MenuItem) {
                 contentScale = ContentScale.Crop
             )
 
-            // Kolom ini akan mengatur posisi teks, tombol, dan harga
             Column(
                 modifier = Modifier
                     .weight(1f)
                     .fillMaxHeight()
             ) {
-                // Konten Atas: Nama dan Deskripsi
                 Column(modifier = Modifier.padding(top = 6.dp)) {
                     Text(
                         text = item.name,
@@ -112,9 +94,8 @@ fun MenuCard(item: MenuItem) {
                     )
                 }
 
-                Spacer(Modifier.height(8.dp)) // Jarak antara deskripsi dan tombol
+                Spacer(Modifier.height(8.dp))
 
-                // Konten Tengah: Tombol "Tambah" atau pemilih kuantitas
                 if (quantity == 0) {
                     OutlinedButton(
                         onClick = { quantity++ },
@@ -127,13 +108,12 @@ fun MenuCard(item: MenuItem) {
                     OutlinedButton(
                         onClick = { /* Aksi di-handle oleh tombol di dalam */ },
                         modifier = Modifier.height(34.dp),
-                        contentPadding = PaddingValues(horizontal = 6.dp) // Padding dihilangkan
+                        contentPadding = PaddingValues(horizontal = 6.dp)
                     ) {
                         Row(
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
-                            // Tombol Minus
                             Button(
                                 onClick = { if (quantity > 0) quantity-- },
                                 modifier = Modifier.size(26.dp),
@@ -147,19 +127,15 @@ fun MenuCard(item: MenuItem) {
                                     imageVector = Icons.Default.Remove,
                                     contentDescription = "Kurangi Kuantitas",
                                     tint = WhiteCream,
-                                    modifier = Modifier.size(16.dp) // Mengubah ukuran ikon
+                                    modifier = Modifier.size(16.dp)
                                 )
                             }
-
-                            // Teks Kuantitas
                             Text(
                                 text = "$quantity",
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 14.sp,
                                 color = TextPrimary
                             )
-
-                            // Tombol Plus
                             Button(
                                 onClick = { quantity++ },
                                 modifier = Modifier.size(26.dp),
@@ -173,17 +149,15 @@ fun MenuCard(item: MenuItem) {
                                     imageVector = Icons.Default.Add,
                                     contentDescription = "Tambah Kuantitas",
                                     tint = WhiteCream,
-                                    modifier = Modifier.size(16.dp) // Mengubah ukuran ikon
+                                    modifier = Modifier.size(16.dp)
                                 )
                             }
                         }
                     }
                 }
 
-                // Spacer ini akan mendorong harga ke bagian bawah
                 Spacer(Modifier.weight(1f))
 
-                // Konten Bawah: Harga
                 Text(
                     text = "%,d".format(item.price).replace(',', '.'),
                     fontWeight = FontWeight.Bold,
