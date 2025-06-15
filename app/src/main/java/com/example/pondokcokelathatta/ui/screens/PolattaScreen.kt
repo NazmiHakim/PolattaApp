@@ -19,37 +19,24 @@ import com.example.pondokcokelathatta.ui.components.*
 @Composable
 fun PolattaScreen(onItemClick: (MenuItem) -> Unit) {
     val selectedTab = remember { mutableStateOf("Choco Series") }
-    val searchQuery = remember { mutableStateOf("") }
+    var searchQuery by remember { mutableStateOf("") }
+    // Gabungkan dan buat daftar yang berbeda untuk pencarian yang komprehensif
+    val allMenuItems = remember { (DummyData.menuItems + DummyData.recommendations).distinct() }
 
-    // State turunan ini akan otomatis diperbarui saat searchQuery berubah.
-    val isSearching = searchQuery.value.isNotEmpty()
-
-    // Gabungkan daftar menu untuk pencarian, item rekomendasi akan diprioritaskan.
-    val allMenuItems = (DummyData.recommendations + DummyData.menuItems).distinctBy { it.name }
-
-    // Melakukan filter setiap kali query pencarian berubah.
-    val searchResults = remember(searchQuery.value) {
-        if (searchQuery.value.isBlank()) {
-            emptyList()
-        } else {
-            val query = searchQuery.value.trim()
-            // Cari item yang namanya mengandung query. Rekomendasi akan muncul di atas.
-            allMenuItems.filter {
-                it.name.contains(query, ignoreCase = true)
+    // Item yang difilter berfungsi sebagai rekomendasi/hasil pencarian
+    val filteredMenuItems by remember(searchQuery, allMenuItems) {
+        derivedStateOf {
+            if (searchQuery.isNotBlank()) {
+                allMenuItems.filter {
+                    it.name.contains(searchQuery, ignoreCase = true)
+                }
+            } else {
+                null // Tampilkan tampilan default jika query kosong
             }
         }
     }
 
     Scaffold(
-        topBar = {
-            Column {
-                TopBar()
-                SearchBar(
-                    query = searchQuery.value,
-                    onQueryChange = { searchQuery.value = it }
-                )
-            }
-        },
         bottomBar = { BottomNavBar() }
     ) { innerPadding ->
         LazyColumn(
@@ -57,29 +44,32 @@ fun PolattaScreen(onItemClick: (MenuItem) -> Unit) {
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            if (isSearching) {
-                // Tampilkan hasil pencarian jika pengguna sedang mencari
-                if (searchResults.isNotEmpty()) {
-                    item { Spacer(Modifier.height(16.dp)) }
-                    items(searchResults) { item ->
-                        Box(Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
-                            MenuCard(item, onClick = { onItemClick(item) })
-                        }
-                    }
-                } else {
+            item { TopBar() }
+            item { SearchBar(query = searchQuery, onQueryChange = { searchQuery = it }) }
+
+            if (filteredMenuItems != null) {
+                // Tampilkan hasil pencarian
+                item { Spacer(Modifier.height(12.dp)) }
+                if (filteredMenuItems!!.isEmpty()) {
                     item {
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
                                 .fillParentMaxSize()
-                                .padding(16.dp)
+                                .padding(top = 150.dp) // Beri sedikit jarak dari atas
                         ) {
-                            Text("Menu tidak ditemukan", style = MaterialTheme.typography.bodyLarge)
+                            Text("Menu tidak ditemukan")
+                        }
+                    }
+                } else {
+                    items(filteredMenuItems!!) { item ->
+                        Box(Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
+                            MenuCard(item, onClick = { onItemClick(item) })
                         }
                     }
                 }
             } else {
-                // Tampilkan konten default jika tidak sedang mencari
+                // Tampilkan konten default home screen
                 item {
                     Spacer(modifier = Modifier.height(24.dp))
                     CustomerCard()
