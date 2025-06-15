@@ -29,6 +29,10 @@ fun PolattaScreen(onItemClick: (MenuItem) -> Unit) {
         ) {
             item { TopBar() }
             item { SearchBar() }
+            item {
+                Spacer(modifier = Modifier.height(24.dp))
+                CustomerCard() // Kartu pelanggan ditambahkan di sini
+            }
             item { RecommendationSection(DummyData.recommendations, onItemClick) }
             item {
                 Spacer(modifier = Modifier.height(32.dp))
