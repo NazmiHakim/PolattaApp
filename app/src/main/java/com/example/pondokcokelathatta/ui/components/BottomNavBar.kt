@@ -1,7 +1,7 @@
 package com.example.pondokcokelathatta.ui.components
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -23,8 +23,10 @@ import com.example.pondokcokelathatta.ui.theme.TextSecondary
 @Composable
 fun BottomNavBar() {
     val selectedIndex = remember { mutableIntStateOf(0) }
-    val items = listOf("Home", "Order", "Message", "Profile")
-    val icons = listOf(Icons.Default.Home, Icons.Default.ShoppingCart, Icons.Default.Email, Icons.Default.Person)
+    // Ganti "Message" menjadi "Favorit"
+    val items = listOf("Home", "Order", "Favorit", "Profile")
+    // Ganti ikon Email menjadi Favorite
+    val icons = listOf(Icons.Default.Home, Icons.Default.ShoppingCart, Icons.Default.Favorite, Icons.Default.Person)
 
     NavigationBar(
         modifier = Modifier.shadow(16.dp), // Menambahkan shadow
