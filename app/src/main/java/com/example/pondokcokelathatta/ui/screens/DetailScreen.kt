@@ -5,9 +5,12 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -16,14 +19,22 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pondokcokelathatta.R
 import com.example.pondokcokelathatta.model.MenuItem
 import com.example.pondokcokelathatta.ui.theme.TextPrimary
+import com.example.pondokcokelathatta.ui.viewmodel.MenuViewModel
 
 @Composable
-fun DetailScreen(menuItem: MenuItem, onBack: () -> Unit) {
+fun DetailScreen(
+    menuItem: MenuItem,
+    onBack: () -> Unit,
+    menuViewModel: MenuViewModel = viewModel()
+) {
+    val favorites by menuViewModel.favorites.collectAsState()
+    val isFavorite = favorites.contains(menuItem)
+
     Box(modifier = Modifier.fillMaxSize()) {
-        // Background Image
         Image(
             painter = painterResource(id = R.drawable.menu_background),
             contentDescription = null,
@@ -32,11 +43,10 @@ fun DetailScreen(menuItem: MenuItem, onBack: () -> Unit) {
         )
 
         Column(modifier = Modifier.fillMaxSize()) {
-            // Top Bar with Back Button and Favorite Icon
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(top = 32.dp, start = 16.dp, end = 16.dp), // Tombol diturunkan
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -48,12 +58,14 @@ fun DetailScreen(menuItem: MenuItem, onBack: () -> Unit) {
                         modifier = Modifier.size(28.dp)
                     )
                 }
-                Icon(
-                    imageVector = Icons.Default.FavoriteBorder,
-                    contentDescription = "Favorite",
-                    tint = Color.White,
-                    modifier = Modifier.size(28.dp)
-                )
+                IconButton(onClick = { menuViewModel.toggleFavorite(menuItem) }) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = "Favorite",
+                        tint = if (isFavorite) Color.Red else Color.White,
+                        modifier = Modifier.size(28.dp)
+                    )
+                }
             }
 
             // Item Name, Category, and Price
@@ -100,12 +112,11 @@ fun DetailScreen(menuItem: MenuItem, onBack: () -> Unit) {
                 )
             }
 
-
             // Bottom Sheet with Details
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .fillMaxHeight(0.5f), // Adjust the height as needed
+                    .fillMaxHeight(0.5f),
                 shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp),
                 colors = CardDefaults.cardColors(containerColor = Color.White)
             ) {
@@ -122,15 +133,13 @@ fun DetailScreen(menuItem: MenuItem, onBack: () -> Unit) {
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Espresso with chocolate and steamed milk, often topped with whipped cream.", // Example description
+                        text = "Espresso with chocolate and steamed milk, often topped with whipped cream.",
                         fontSize = 14.sp,
                         color = TextPrimary.copy(alpha = 0.7f),
                         lineHeight = 20.sp
                     )
                     Spacer(modifier = Modifier.height(16.dp))
-                    // Rating
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        // Your rating stars implementation
                         Text(text = "⭐ 4/5")
                     }
                 }

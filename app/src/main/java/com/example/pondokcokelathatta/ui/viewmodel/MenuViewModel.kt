@@ -3,26 +3,34 @@ package com.example.pondokcokelathatta.ui.viewmodel
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.lifecycle.ViewModel
 import com.example.pondokcokelathatta.model.MenuItem
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 class MenuViewModel : ViewModel() {
-    // Gunakan Map untuk menyimpan kuantitas setiap item menu berdasarkan namanya (atau ID unik jika ada)
-    // _quantities adalah private untuk memastikan hanya ViewModel yang bisa mengubahnya secara langsung.
     private val _quantities = mutableStateMapOf<String, Int>()
+    val quantities: Map<String, Int> get() = _quantities
 
-    // Expose map sebagai State yang tidak bisa diubah dari luar ViewModel
-    val quantities: Map<String, Int>
-        get() = _quantities
+    private val _favorites = MutableStateFlow<Set<MenuItem>>(emptySet())
+    val favorites = _favorites.asStateFlow()
 
-    // Fungsi untuk menambah kuantitas item
     fun increaseQuantity(item: MenuItem) {
         _quantities[item.name] = (_quantities[item.name] ?: 0) + 1
     }
 
-    // Fungsi untuk mengurangi kuantitas item
     fun decreaseQuantity(item: MenuItem) {
         val currentQuantity = _quantities[item.name] ?: 0
         if (currentQuantity > 0) {
             _quantities[item.name] = currentQuantity - 1
         }
+    }
+
+    fun toggleFavorite(item: MenuItem) {
+        val currentFavorites = _favorites.value.toMutableSet()
+        if (currentFavorites.contains(item)) {
+            currentFavorites.remove(item)
+        } else {
+            currentFavorites.add(item)
+        }
+        _favorites.value = currentFavorites
     }
 }
