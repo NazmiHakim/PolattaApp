@@ -58,6 +58,7 @@ dependencies {
     // dengan baris ini
     implementation(libs.androidx.navigation.compose)
 
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.0")
     implementation(libs.car.ui.lib)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

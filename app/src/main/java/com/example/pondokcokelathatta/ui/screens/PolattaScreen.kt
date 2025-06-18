@@ -11,19 +11,22 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.pondokcokelathatta.data.model.DummyData
 import com.example.pondokcokelathatta.model.MenuItem
 import com.example.pondokcokelathatta.ui.components.*
+import com.example.pondokcokelathatta.ui.viewmodel.MenuViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun PolattaScreen(onItemClick: (MenuItem) -> Unit) {
+fun PolattaScreen(
+    onItemClick: (MenuItem) -> Unit,
+    menuViewModel: MenuViewModel = viewModel() // 1. Inisialisasi ViewModel
+) {
     val selectedTab = remember { mutableStateOf("Choco Series") }
     var searchQuery by remember { mutableStateOf("") }
-    // Gabungkan dan buat daftar yang berbeda untuk pencarian yang komprehensif
     val allMenuItems = remember { (DummyData.menuItems + DummyData.recommendations).distinct() }
 
-    // Item yang difilter berfungsi sebagai rekomendasi/hasil pencarian
     val filteredMenuItems by remember(searchQuery, allMenuItems) {
         derivedStateOf {
             if (searchQuery.isNotBlank()) {
@@ -31,7 +34,7 @@ fun PolattaScreen(onItemClick: (MenuItem) -> Unit) {
                     it.name.contains(searchQuery, ignoreCase = true)
                 }
             } else {
-                null // Tampilkan tampilan default jika query kosong
+                null
             }
         }
     }
@@ -48,7 +51,6 @@ fun PolattaScreen(onItemClick: (MenuItem) -> Unit) {
             item { SearchBar(query = searchQuery, onQueryChange = { searchQuery = it }) }
 
             if (filteredMenuItems != null) {
-                // Tampilkan hasil pencarian
                 item { Spacer(Modifier.height(12.dp)) }
                 if (filteredMenuItems!!.isEmpty()) {
                     item {
@@ -56,7 +58,7 @@ fun PolattaScreen(onItemClick: (MenuItem) -> Unit) {
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
                                 .fillParentMaxSize()
-                                .padding(top = 150.dp) // Beri sedikit jarak dari atas
+                                .padding(top = 150.dp)
                         ) {
                             Text("Menu tidak ditemukan")
                         }
@@ -64,12 +66,18 @@ fun PolattaScreen(onItemClick: (MenuItem) -> Unit) {
                 } else {
                     items(filteredMenuItems!!) { item ->
                         Box(Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
-                            MenuCard(item, onClick = { onItemClick(item) })
+                            // 2. Teruskan data dan fungsi dari ViewModel ke MenuCard
+                            MenuCard(
+                                item = item,
+                                quantity = menuViewModel.quantities[item.name] ?: 0,
+                                onIncrease = { menuViewModel.increaseQuantity(item) },
+                                onDecrease = { menuViewModel.decreaseQuantity(item) },
+                                onClick = { onItemClick(item) }
+                            )
                         }
                     }
                 }
             } else {
-                // Tampilkan konten default home screen
                 item {
                     Spacer(modifier = Modifier.height(24.dp))
                     CustomerCard()
@@ -86,8 +94,12 @@ fun PolattaScreen(onItemClick: (MenuItem) -> Unit) {
                 item { CategoryTabs(selectedTab) }
                 item { Spacer(Modifier.height(12.dp)) }
 
+                // 3. Modifikasi panggilan menuList
                 menuList(
                     menuItems = DummyData.menuItems,
+                    quantities = menuViewModel.quantities, // Teruskan map kuantitas
+                    onIncrease = { menuViewModel.increaseQuantity(it) }, // Teruskan fungsi increase
+                    onDecrease = { menuViewModel.decreaseQuantity(it) }, // Teruskan fungsi decrease
                     onItemClick = onItemClick
                 )
             }

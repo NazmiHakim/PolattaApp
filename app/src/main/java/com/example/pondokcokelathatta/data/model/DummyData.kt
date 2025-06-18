@@ -8,53 +8,31 @@ import com.example.pondokcokelathatta.model.MenuItem
  */
 object DummyData {
 
-    // Daftar item yang direkomendasikan
-    val recommendations = listOf(
+    // Mendefinisikan satu sumber data untuk semua item menu untuk memastikan konsistensi.
+    private val allMenuItems = listOf(
         MenuItem(
             name = "Choco Milk",
             description = "Espresso dengan cokelat dan susu steamed.",
-            price = 25000,
-            imageRes = R.drawable.choco_milk // Ganti dengan drawable Anda
+            price = 13000, // Harga diperbarui
+            imageRes = R.drawable.choco_milk // Pastikan drawable ini ada
         ),
         MenuItem(
             name = "Choco Latte",
             description = "Espresso dengan sedikit susu atau busa.",
-            price = 30000,
-            imageRes = R.drawable.choco_milk // Ganti dengan drawable Anda
+            price = 13000, // Harga diperbarui
+            imageRes = R.drawable.choco_milk // Pastikan drawable ini ada
         ),
         MenuItem(
             name = "Choco Breeze",
             description = "Espresso dengan banyak susu steamed.",
-            price = 28000,
-            imageRes = R.drawable.choco_milk // Ganti dengan drawable Anda
+            price = 13000, // Harga diperbarui
+            imageRes = R.drawable.choco_milk // Pastikan drawable ini ada
         )
     )
 
-    // Daftar semua item menu yang tersedia (diperbarui sesuai screenshot).
-    val menuItems = listOf(
-        MenuItem(
-            name = "Choco Milk",
-            description = "Double espresso and water, served cold",
-            price = 13000,
-            imageRes = R.drawable.choco_milk // Pastikan drawable ini ada
-        ),
-        MenuItem(
-            name = "Choco Milk",
-            description = "Double espresso and water, served cold",
-            price = 13000,
-            imageRes = R.drawable.choco_milk // Pastikan drawable ini ada
-        ),
-        MenuItem(
-            name = "Choco Milk",
-            description = "Double espresso and water, served cold",
-            price = 13000,
-            imageRes = R.drawable.choco_milk // Pastikan drawable ini ada
-        ),
-        MenuItem(
-            name = "Choco Milk",
-            description = "Double espresso and water, served cold",
-            price = 13000,
-            imageRes = R.drawable.choco_milk // Pastikan drawable ini ada
-        )
-    )
+    // Daftar item yang direkomendasikan sekarang mengambil dari sumber data utama.
+    val recommendations: List<MenuItem> = allMenuItems
+
+    // Daftar semua item menu yang tersedia juga mengambil dari sumber data utama.
+    val menuItems: List<MenuItem> = allMenuItems
 }

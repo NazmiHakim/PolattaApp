@@ -28,25 +28,37 @@ import com.example.pondokcokelathatta.ui.theme.TextPrimary
 import com.example.pondokcokelathatta.ui.theme.TextSecondary
 import com.example.pondokcokelathatta.ui.theme.WhiteCream
 
-/**
- * Extension function untuk LazyListScope yang menambahkan daftar item menu.
- * Ini memungkinkan kita untuk memasukkan daftar item ke dalam LazyColumn yang ada.
- */
+// Perbarui signature dari extension function `menuList`
 fun LazyListScope.menuList(
     menuItems: List<MenuItem>,
+    quantities: Map<String, Int>, // Terima map kuantitas
+    onIncrease: (MenuItem) -> Unit, // Terima fungsi untuk menambah
+    onDecrease: (MenuItem) -> Unit, // Terima fungsi untuk mengurangi
     onItemClick: (MenuItem) -> Unit
 ) {
     items(menuItems) { item ->
-        // Padding ditambahkan di sini untuk setiap kartu
         Box(Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
-            MenuCard(item, onClick = { onItemClick(item) })
+            MenuCard(
+                item = item,
+                quantity = quantities[item.name] ?: 0, // Dapatkan kuantitas dari map
+                onIncrease = { onIncrease(item) },
+                onDecrease = { onDecrease(item) },
+                onClick = { onItemClick(item) }
+            )
         }
     }
 }
 
+// Perbarui signature dari `MenuCard`
 @Composable
-fun MenuCard(item: MenuItem, onClick: () -> Unit) {
-    var quantity by remember { mutableIntStateOf(0) }
+fun MenuCard(
+    item: MenuItem,
+    quantity: Int, // Terima kuantitas sebagai parameter
+    onIncrease: () -> Unit, // Terima lambda untuk menambah
+    onDecrease: () -> Unit, // Terima lambda untuk mengurangi
+    onClick: () -> Unit
+) {
+    // Hapus baris ini: var quantity by remember { mutableIntStateOf(0) }
     var isPressed by remember { mutableStateOf(false) }
     val scale by animateFloatAsState(if (isPressed) 0.98f else 1f, label = "")
 
@@ -113,7 +125,7 @@ fun MenuCard(item: MenuItem, onClick: () -> Unit) {
 
                 if (quantity == 0) {
                     OutlinedButton(
-                        onClick = { quantity++ },
+                        onClick = onIncrease, // Panggil fungsi onIncrease
                         modifier = Modifier.height(34.dp),
                         contentPadding = PaddingValues(horizontal = 24.dp)
                     ) {
@@ -130,7 +142,7 @@ fun MenuCard(item: MenuItem, onClick: () -> Unit) {
                             horizontalArrangement = Arrangement.spacedBy(12.dp)
                         ) {
                             Button(
-                                onClick = { if (quantity > 0) quantity-- },
+                                onClick = onDecrease, // Panggil fungsi onDecrease
                                 modifier = Modifier.size(26.dp),
                                 shape = CircleShape,
                                 colors = ButtonDefaults.buttonColors(
@@ -152,7 +164,7 @@ fun MenuCard(item: MenuItem, onClick: () -> Unit) {
                                 color = TextPrimary
                             )
                             Button(
-                                onClick = { quantity++ },
+                                onClick = onIncrease, // Panggil fungsi onIncrease
                                 modifier = Modifier.size(26.dp),
                                 shape = CircleShape,
                                 colors = ButtonDefaults.buttonColors(
