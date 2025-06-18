@@ -16,6 +16,7 @@ import com.example.pondokcokelathatta.ui.viewmodel.MenuViewModel
 
 @Composable
 fun PolattaScreen(
+    modifier: Modifier = Modifier,
     onItemClick: (MenuItem) -> Unit,
     menuViewModel: MenuViewModel
 ) {
@@ -36,7 +37,7 @@ fun PolattaScreen(
     }
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize()
     ) {
         item { TopBar() }
         item { SearchBar(query = searchQuery, onQueryChange = { searchQuery = it }) }

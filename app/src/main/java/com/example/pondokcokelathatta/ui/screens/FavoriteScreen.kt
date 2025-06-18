@@ -17,12 +17,13 @@ import com.example.pondokcokelathatta.ui.viewmodel.MenuViewModel
 
 @Composable
 fun FavoriteScreen(
+    modifier: Modifier = Modifier,
     menuViewModel: MenuViewModel,
     onItemClick: (MenuItem) -> Unit
 ) {
     val favoriteItems by menuViewModel.favorites.collectAsState()
 
-    Column(modifier = Modifier.fillMaxSize()) {
+    Column(modifier = modifier.fillMaxSize()) {
         TopBar()
         if (favoriteItems.isEmpty()) {
             Box(
