@@ -3,11 +3,15 @@ package com.example.pondokcokelathatta.ui.viewmodel
 import android.app.Application
 import android.content.Context
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.snapshotFlow
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.pondokcokelathatta.data.model.DummyData
 import com.example.pondokcokelathatta.model.MenuItem
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 
 // Ubah dari ViewModel menjadi AndroidViewModel
 class MenuViewModel(application: Application) : AndroidViewModel(application) {
@@ -81,4 +85,43 @@ class MenuViewModel(application: Application) : AndroidViewModel(application) {
         // Panggil fungsi save setiap kali ada perubahan pada daftar favorit
         saveFavorites()
     }
+
+    // Kumpulkan semua item menu unik dari DummyData
+    private val allMenuItems = (DummyData.menuItems + DummyData.recommendations).distinct().associateBy { it.name }
+
+    // Flow untuk memantau total kuantitas secara real-time
+    val totalQuantity = snapshotFlow { _quantities.values.sum() }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = 0
+        )
+
+    // Flow untuk memantau total harga secara real-time
+    val totalPrice = snapshotFlow {
+        _quantities.map { (itemName, quantity) ->
+            (allMenuItems[itemName]?.price ?: 0) * quantity
+        }.sum()
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = 0
+    )
+
+    // Flow untuk mendapatkan daftar item yang sedang dipesan (kuantitas > 0)
+    val orderedItems = snapshotFlow {
+        _quantities.filter { it.value > 0 }
+            .mapNotNull { (itemName, quantity) ->
+                // Gunakan mapNotNull dan safe call (?.) untuk memastikan hanya item yang valid yang diproses
+                allMenuItems[itemName]?.let { menuItem ->
+                    menuItem to quantity // Membuat Pair<MenuItem, Int>
+                }
+            }
+            .toMap() // Mengonversi List<Pair<MenuItem, Int>> menjadi Map<MenuItem, Int>
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = emptyMap()
+    )
+
 }

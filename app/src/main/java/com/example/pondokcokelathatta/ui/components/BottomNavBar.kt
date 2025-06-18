@@ -29,7 +29,7 @@ private data class BottomNavItem(val label: String, val icon: ImageVector, val s
 fun BottomNavBar(navController: NavController) {
     val navItems = listOf(
         BottomNavItem("Home", Icons.Default.Home, Screen.Home),
-        BottomNavItem("Order", Icons.Default.ShoppingCart, Screen.Home), // Placeholder
+        BottomNavItem("Order", Icons.Default.ShoppingCart, Screen.Checkout), // Diubah ke Screen.Checkout
         BottomNavItem("Favorit", Icons.Default.Favorite, Screen.Favorite),
         BottomNavItem("Profile", Icons.Default.Person, Screen.Home) // Placeholder
     )
