@@ -25,12 +25,15 @@ import java.util.Locale
 fun CheckoutScreen(
     menuViewModel: MenuViewModel,
     onBack: () -> Unit,
+    modifier: Modifier = Modifier // Parameter 'modifier' ditambahkan kembali
 ) {
     val orderedItems by menuViewModel.orderedItems.collectAsState()
     val totalPrice by menuViewModel.totalPrice.collectAsState()
     val finalPrice = totalPrice
 
+    // Modifier yang diterima dari PolattaApp diterapkan ke Scaffold ini
     Scaffold(
+        modifier = modifier,
         topBar = {
             TopAppBar(
                 title = { Text("Payment Summary", fontWeight = FontWeight.Bold) },
@@ -39,7 +42,9 @@ fun CheckoutScreen(
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
+                // Modifier ini hanya untuk TopAppBar agar posisinya naik
+                modifier = Modifier.offset(y = (-28).dp)
             )
         },
         bottomBar = {

@@ -106,10 +106,15 @@ fun PolattaApp() {
             }
         }
         composable(Screen.Checkout.route) {
-            CheckoutScreen(
-                menuViewModel = menuViewModel,
-                onBack = { navController.popBackStack() }
-            )
+            Scaffold( // Wrap CheckoutScreen in a Scaffold
+                bottomBar = { BottomNavBar(navController = navController) } // Add the BottomNavBar
+            ) { innerPadding ->
+                CheckoutScreen(
+                    menuViewModel = menuViewModel,
+                    onBack = { navController.popBackStack() },
+                    modifier = Modifier.padding(innerPadding) // Apply padding
+                )
+            }
         }
     }
 }
