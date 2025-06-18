@@ -18,7 +18,8 @@ import com.example.pondokcokelathatta.ui.viewmodel.MenuViewModel
 fun PolattaScreen(
     modifier: Modifier = Modifier,
     onItemClick: (MenuItem) -> Unit,
-    menuViewModel: MenuViewModel
+    menuViewModel: MenuViewModel,
+    showCheckoutButton: Boolean
 ) {
     val selectedTab = remember { mutableStateOf("Choco Series") }
     var searchQuery by remember { mutableStateOf("") }
@@ -37,7 +38,8 @@ fun PolattaScreen(
     }
 
     LazyColumn(
-        modifier = modifier.fillMaxSize()
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(bottom = if (showCheckoutButton) 80.dp else 0.dp)
     ) {
         item { TopBar() }
         item { SearchBar(query = searchQuery, onQueryChange = { searchQuery = it }) }

@@ -29,7 +29,7 @@ fun CheckoutButton(
         onClick = onClick,
         modifier = modifier
             .fillMaxWidth()
-            .height(60.dp),
+            .height(45.dp),
         shape = RoundedCornerShape(50), // Sudut membulat penuh
         colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00880F)), // Warna hijau dari gambar Gojek
         contentPadding = PaddingValues(horizontal = 20.dp)
@@ -43,14 +43,14 @@ fun CheckoutButton(
                 text = "$itemCount item${if (itemCount > 1) "s" else ""}",
                 color = Color.White,
                 fontWeight = FontWeight.Bold,
-                fontSize = 16.sp
+                fontSize = 15.sp
             )
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(
-                    text = "Rp${formatter.format(totalPrice)}",
+                    text = formatter.format(totalPrice),
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
+                    fontSize = 15.sp
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Icon(

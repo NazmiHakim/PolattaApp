@@ -28,10 +28,7 @@ fun CheckoutScreen(
 ) {
     val orderedItems by menuViewModel.orderedItems.collectAsState()
     val totalPrice by menuViewModel.totalPrice.collectAsState()
-    // Contoh biaya pengiriman dan diskon (bisa diubah sesuai kebutuhan)
-    val deliveryFee = 20000
-    val discount = -6000
-    val finalPrice = totalPrice + deliveryFee + discount
+    val finalPrice = totalPrice
 
     Scaffold(
         topBar = {
@@ -51,7 +48,7 @@ fun CheckoutScreen(
                 onClick = { /* TODO: Logika untuk memesan */ },
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(start = 16.dp, end = 16.dp, top = 16.dp, bottom = 32.dp),
                 shape = RoundedCornerShape(12.dp),
             ) {
                 Text("Place delivery order", modifier = Modifier.padding(vertical = 8.dp))
@@ -91,8 +88,6 @@ fun CheckoutScreen(
                 Text("Payment summary", style = MaterialTheme.typography.titleLarge)
                 Spacer(modifier = Modifier.height(16.dp))
                 PaymentDetailRow("Price", totalPrice)
-                PaymentDetailRow("Handling and delivery fee", deliveryFee)
-                PaymentDetailRow("Discounts Extra", discount, isDiscount = true)
                 HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
                 PaymentDetailRow("Total payment", finalPrice, isTotal = true)
                 Spacer(modifier = Modifier.height(24.dp))

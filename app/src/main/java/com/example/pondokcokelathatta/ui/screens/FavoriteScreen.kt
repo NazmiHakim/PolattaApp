@@ -19,7 +19,8 @@ import com.example.pondokcokelathatta.ui.viewmodel.MenuViewModel
 fun FavoriteScreen(
     modifier: Modifier = Modifier,
     menuViewModel: MenuViewModel,
-    onItemClick: (MenuItem) -> Unit
+    onItemClick: (MenuItem) -> Unit,
+    showCheckoutButton: Boolean
 ) {
     val favoriteItems by menuViewModel.favorites.collectAsState()
 
@@ -36,7 +37,10 @@ fun FavoriteScreen(
         } else {
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(vertical = 12.dp)
+                contentPadding = PaddingValues(
+                    top = 12.dp,
+                    bottom = if (showCheckoutButton) 80.dp else 12.dp
+                )
             ) {
                 items(favoriteItems.toList()) { item ->
                     Box(Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {

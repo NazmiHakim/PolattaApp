@@ -27,9 +27,9 @@ fun PolattaApp() {
     val navController = rememberNavController()
     val menuViewModel: MenuViewModel = viewModel()
 
-    // Ambil state dari ViewModel untuk mengontrol visibilitas tombol checkout
     val totalQuantity by menuViewModel.totalQuantity.collectAsState()
     val totalPrice by menuViewModel.totalPrice.collectAsState()
+    val showCheckoutButton = totalQuantity > 0
 
     NavHost(
         navController = navController,
@@ -39,17 +39,16 @@ fun PolattaApp() {
             Scaffold(
                 bottomBar = { BottomNavBar(navController = navController) }
             ) { innerPadding ->
-                // Gunakan Box untuk menumpuk layar dengan tombol checkout
                 Box(modifier = Modifier.padding(innerPadding)) {
                     PolattaScreen(
                         menuViewModel = menuViewModel,
                         onItemClick = { menuItem ->
                             navController.navigate(Screen.Detail.createRoute(menuItem.name))
-                        }
+                        },
+                        showCheckoutButton = showCheckoutButton
                     )
-                    // Tampilkan tombol checkout jika ada item di keranjang
                     AnimatedVisibility(
-                        visible = totalQuantity > 0,
+                        visible = showCheckoutButton,
                         enter = slideInVertically(initialOffsetY = { it }),
                         exit = slideOutVertically(targetOffsetY = { it }),
                         modifier = Modifier
@@ -74,11 +73,11 @@ fun PolattaApp() {
                         menuViewModel = menuViewModel,
                         onItemClick = { menuItem ->
                             navController.navigate(Screen.Detail.createRoute(menuItem.name))
-                        }
+                        },
+                        showCheckoutButton = showCheckoutButton
                     )
-                    // Tampilkan tombol checkout jika ada item di keranjang
                     AnimatedVisibility(
-                        visible = totalQuantity > 0,
+                        visible = showCheckoutButton,
                         enter = slideInVertically(initialOffsetY = { it }),
                         exit = slideOutVertically(targetOffsetY = { it }),
                         modifier = Modifier
@@ -106,7 +105,6 @@ fun PolattaApp() {
                 )
             }
         }
-        // Tambahkan halaman Checkout ke NavHost
         composable(Screen.Checkout.route) {
             CheckoutScreen(
                 menuViewModel = menuViewModel,
