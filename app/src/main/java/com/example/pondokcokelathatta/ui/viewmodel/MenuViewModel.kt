@@ -1,17 +1,59 @@
 package com.example.pondokcokelathatta.ui.viewmodel
 
+import android.app.Application
+import android.content.Context
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
+import com.example.pondokcokelathatta.data.model.DummyData
 import com.example.pondokcokelathatta.model.MenuItem
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-class MenuViewModel : ViewModel() {
+// Ubah dari ViewModel menjadi AndroidViewModel
+class MenuViewModel(application: Application) : AndroidViewModel(application) {
     private val _quantities = mutableStateMapOf<String, Int>()
     val quantities: Map<String, Int> get() = _quantities
 
     private val _favorites = MutableStateFlow<Set<MenuItem>>(emptySet())
     val favorites = _favorites.asStateFlow()
+
+    // Inisialisasi SharedPreferences
+    private val sharedPreferences = application.getSharedPreferences("polatta_favorite_prefs", Context.MODE_PRIVATE)
+
+    companion object {
+        private const val FAVORITES_KEY = "favorite_menu_items"
+    }
+
+    // Blok init akan dipanggil saat ViewModel pertama kali dibuat
+    init {
+        loadFavorites()
+    }
+
+    /**
+     * Memuat daftar nama item favorit dari SharedPreferences,
+     * kemudian mencocokkannya dengan data dari DummyData untuk mendapatkan objek MenuItem.
+     */
+    private fun loadFavorites() {
+        // Ambil semua item menu yang ada dan pastikan tidak ada duplikat
+        val allMenuItems = (DummyData.menuItems + DummyData.recommendations).distinct()
+        // Baca data nama favorit dari SharedPreferences, jika tidak ada, kembalikan set kosong
+        val favoriteNames = sharedPreferences.getStringSet(FAVORITES_KEY, emptySet()) ?: emptySet()
+        // Filter daftar semua menu untuk mendapatkan objek MenuItem yang namanya ada di daftar favorit
+        _favorites.value = allMenuItems.filter { it.name in favoriteNames }.toSet()
+    }
+
+    /**
+     * Menyimpan daftar nama item favorit saat ini ke dalam SharedPreferences.
+     */
+    private fun saveFavorites() {
+        // Ambil nama dari setiap item di state _favorites
+        val favoriteNames = _favorites.value.map { it.name }.toSet()
+        // Simpan set nama tersebut ke SharedPreferences
+        with(sharedPreferences.edit()) {
+            putStringSet(FAVORITES_KEY, favoriteNames)
+            apply() // apply() berjalan di background, lebih efisien daripada commit()
+        }
+    }
 
     fun increaseQuantity(item: MenuItem) {
         _quantities[item.name] = (_quantities[item.name] ?: 0) + 1
@@ -24,6 +66,9 @@ class MenuViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Mengubah status favorit sebuah item dan langsung menyimpannya ke SharedPreferences.
+     */
     fun toggleFavorite(item: MenuItem) {
         val currentFavorites = _favorites.value.toMutableSet()
         if (currentFavorites.contains(item)) {
@@ -32,5 +77,8 @@ class MenuViewModel : ViewModel() {
             currentFavorites.add(item)
         }
         _favorites.value = currentFavorites
+
+        // Panggil fungsi save setiap kali ada perubahan pada daftar favorit
+        saveFavorites()
     }
 }
