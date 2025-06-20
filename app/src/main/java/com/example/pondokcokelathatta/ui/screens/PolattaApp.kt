@@ -4,15 +4,21 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -22,6 +28,7 @@ import com.example.pondokcokelathatta.ui.components.CheckoutButton
 import com.example.pondokcokelathatta.ui.navigation.Screen
 import com.example.pondokcokelathatta.ui.viewmodel.MenuViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PolattaApp() {
     val navController = rememberNavController()
@@ -58,7 +65,16 @@ fun PolattaApp() {
                         CheckoutButton(
                             itemCount = totalQuantity,
                             totalPrice = totalPrice,
-                            onClick = { navController.navigate(Screen.Checkout.route) }
+                            onClick = {
+                                // PERUBAHAN: Menggunakan logika navigasi yang sama dengan BottomNavBar
+                                navController.navigate(Screen.Checkout.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
                         )
                     }
                 }
@@ -87,7 +103,16 @@ fun PolattaApp() {
                         CheckoutButton(
                             itemCount = totalQuantity,
                             totalPrice = totalPrice,
-                            onClick = { navController.navigate(Screen.Checkout.route) }
+                            onClick = {
+                                // PERUBAHAN: Menggunakan logika navigasi yang sama dengan BottomNavBar
+                                navController.navigate(Screen.Checkout.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
                         )
                     }
                 }
@@ -106,13 +131,25 @@ fun PolattaApp() {
             }
         }
         composable(Screen.Checkout.route) {
-            Scaffold( // Wrap CheckoutScreen in a Scaffold
-                bottomBar = { BottomNavBar(navController = navController) } // Add the BottomNavBar
+            // PERUBAHAN: Scaffold untuk Checkout Screen sekarang diatur di sini
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = { Text("Payment Summary", fontWeight = FontWeight.Bold) },
+                        navigationIcon = {
+                            IconButton(onClick = { navController.popBackStack() }) {
+                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                            }
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
+                        modifier = Modifier.offset(y = (-28).dp)
+                    )
+                },
+                bottomBar = { BottomNavBar(navController = navController) }
             ) { innerPadding ->
                 CheckoutScreen(
                     menuViewModel = menuViewModel,
-                    onBack = { navController.popBackStack() },
-                    modifier = Modifier.padding(innerPadding) // Apply padding
+                    modifier = Modifier.padding(innerPadding)
                 )
             }
         }
