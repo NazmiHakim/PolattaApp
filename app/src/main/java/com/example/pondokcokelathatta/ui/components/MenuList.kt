@@ -28,19 +28,20 @@ import com.example.pondokcokelathatta.ui.theme.TextPrimary
 import com.example.pondokcokelathatta.ui.theme.TextSecondary
 import com.example.pondokcokelathatta.ui.theme.WhiteCream
 
-// Perbarui signature dari extension function `menuList`
+// key digunakan untuk optimalisasi
 fun LazyListScope.menuList(
     menuItems: List<MenuItem>,
-    quantities: Map<String, Int>, // Terima map kuantitas
-    onIncrease: (MenuItem) -> Unit, // Terima fungsi untuk menambah
-    onDecrease: (MenuItem) -> Unit, // Terima fungsi untuk mengurangi
+    quantities: Map<String, Int>,
+    onIncrease: (MenuItem) -> Unit,
+    onDecrease: (MenuItem) -> Unit,
     onItemClick: (MenuItem) -> Unit
 ) {
-    items(menuItems) { item ->
+    // TAMBAHKAN key = { it.name } di sini
+    items(items = menuItems, key = { it.name }) { item ->
         Box(Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
             MenuCard(
                 item = item,
-                quantity = quantities[item.name] ?: 0, // Dapatkan kuantitas dari map
+                quantity = quantities[item.name] ?: 0,
                 onIncrease = { onIncrease(item) },
                 onDecrease = { onDecrease(item) },
                 onClick = { onItemClick(item) }

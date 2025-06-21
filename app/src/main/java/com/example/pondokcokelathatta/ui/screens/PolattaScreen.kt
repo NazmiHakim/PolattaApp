@@ -58,7 +58,8 @@ fun PolattaScreen(
                     }
                 }
             } else {
-                items(filteredMenuItems!!) { item ->
+                // TAMBAHKAN key = { it.name } di sini
+                items(items = filteredMenuItems!!, key = { it.name }) { item ->
                     Box(Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
                         MenuCard(
                             item = item,
