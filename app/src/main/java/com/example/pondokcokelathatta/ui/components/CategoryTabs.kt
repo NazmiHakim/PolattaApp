@@ -15,7 +15,7 @@ import com.example.pondokcokelathatta.ui.theme.TextSecondary
 
 @Composable
 fun CategoryTabs(selected: MutableState<String>, modifier: Modifier = Modifier) {
-    val tabs = listOf("Choco Series", "Cimory Series", "Matcha", "Choco Boo", "Basreng")
+    val tabs = listOf("Choco Series", "Choco Boo", "Cimory Series", "Matcha Series", "Topping", "Basreng")
     val selectedIndex = tabs.indexOf(selected.value)
     ScrollableTabRow(
         selectedTabIndex = selectedIndex,

@@ -6,5 +6,6 @@ data class MenuItem(
     val name: String,
     val description: String,
     val price: Int,
-    @DrawableRes val imageRes: Int // Tambahkan properti untuk resource gambar
+    @DrawableRes val imageRes: Int, // Tambahkan properti untuk resource gambar
+    val category: String
 )

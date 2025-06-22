@@ -23,7 +23,7 @@ fun PolattaScreen(
 ) {
     val selectedTab = remember { mutableStateOf("Choco Series") }
     var searchQuery by remember { mutableStateOf("") }
-    val allMenuItems = remember { (DummyData.menuItems + DummyData.recommendations).distinct() }
+    val allMenuItems = remember { (DummyData.menuItems).distinct() }
 
     val filteredMenuItems by remember(searchQuery, allMenuItems) {
         derivedStateOf {
@@ -34,6 +34,12 @@ fun PolattaScreen(
             } else {
                 null
             }
+        }
+    }
+
+    val menuItemsByCategory by remember(selectedTab.value, allMenuItems) {
+        derivedStateOf {
+            allMenuItems.filter { it.category == selectedTab.value }
         }
     }
 
@@ -88,13 +94,17 @@ fun PolattaScreen(
             item { CategoryTabs(selectedTab) }
             item { Spacer(Modifier.height(12.dp)) }
 
-            menuList(
-                menuItems = DummyData.menuItems,
-                quantities = menuViewModel.quantities,
-                onIncrease = { menuViewModel.increaseQuantity(it) },
-                onDecrease = { menuViewModel.decreaseQuantity(it) },
-                onItemClick = onItemClick
-            )
+            items(items = menuItemsByCategory, key = { it.name }) { item ->
+                Box(Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
+                    MenuCard(
+                        item = item,
+                        quantity = menuViewModel.quantities[item.name] ?: 0,
+                        onIncrease = { menuViewModel.increaseQuantity(item) },
+                        onDecrease = { menuViewModel.decreaseQuantity(item) },
+                        onClick = { onItemClick(item) }
+                    )
+                }
+            }
         }
     }
 }
