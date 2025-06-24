@@ -18,6 +18,7 @@ import com.example.pondokcokelathatta.ui.viewmodel.MenuViewModel
 fun PolattaScreen(
     modifier: Modifier = Modifier,
     onItemClick: (MenuItem) -> Unit,
+    onProfileClick: () -> Unit, // ADD THIS PARAMETER
     menuViewModel: MenuViewModel,
     showCheckoutButton: Boolean
 ) {
@@ -80,7 +81,7 @@ fun PolattaScreen(
         } else {
             item {
                 Spacer(modifier = Modifier.height(24.dp))
-                CustomerCard()
+                CustomerCard(onClick = onProfileClick) // UPDATE THIS LINE
             }
             item { RecommendationSection(DummyData.recommendations, onItemClick) }
             item {

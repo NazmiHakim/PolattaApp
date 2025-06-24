@@ -1,6 +1,7 @@
 package com.example.pondokcokelathatta.ui.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,18 +16,17 @@ import androidx.compose.ui.unit.sp
 import com.example.pondokcokelathatta.R
 
 @Composable
-fun CustomerCard(modifier: Modifier = Modifier) {
+fun CustomerCard(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit // ADD THIS PARAMETER
+) {
     Box(
         modifier = modifier
             .padding(horizontal = 16.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable(onClick = onClick), // ADD THIS MODIFIER
         contentAlignment = Alignment.Center
     ) {
-        Box(
-            modifier = Modifier
-                .width(380.dp)
-                .height(190.dp)
-        ) {
             Image(
                 // GANTI INI dengan resource `user_card` Anda setelah diunggah, contoh: R.drawable.user_card
                 painter = painterResource(id = R.drawable.user_card),
@@ -74,4 +74,3 @@ fun CustomerCard(modifier: Modifier = Modifier) {
             }
         }
     }
-}

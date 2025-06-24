@@ -52,6 +52,9 @@ fun PolattaApp() {
                         onItemClick = { menuItem ->
                             navController.navigate(Screen.Detail.createRoute(menuItem.name))
                         },
+                        onProfileClick = {
+                            navController.navigate(Screen.Profile.route)
+                        },
                         showCheckoutButton = showCheckoutButton
                     )
                     AnimatedVisibility(
@@ -152,6 +155,31 @@ fun PolattaApp() {
                     modifier = Modifier.padding(innerPadding)
                 )
             }
+        }
+
+        composable(Screen.Profile.route) {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = { Text("My Profile") },
+                        navigationIcon = {
+                            IconButton(onClick = { navController.popBackStack() }) {
+                                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
+                            }
+                        },
+                        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
+                    )
+                },
+                bottomBar = { BottomNavBar(navController = navController) }
+            ) { innerPadding ->
+                ProfileScreen(
+                    navController = navController,
+                    modifier = Modifier.padding(innerPadding)
+                )
+            }
+        }
+        composable(Screen.EditProfile.route) {
+            EditProfileScreen(navController = navController)
         }
     }
 }

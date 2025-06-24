@@ -31,7 +31,7 @@ fun BottomNavBar(navController: NavController) {
         BottomNavItem("Home", Icons.Default.Home, Screen.Home),
         BottomNavItem("Order", Icons.Default.ShoppingCart, Screen.Checkout), // Diubah ke Screen.Checkout
         BottomNavItem("Favorit", Icons.Default.Favorite, Screen.Favorite),
-        BottomNavItem("Profile", Icons.Default.Person, Screen.Home) // Placeholder
+        BottomNavItem("Profile", Icons.Default.Person, Screen.Profile) // CHANGED: from Screen.Home to Screen.Profile
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
