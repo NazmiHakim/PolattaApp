@@ -69,7 +69,6 @@ fun PolattaApp() {
                             itemCount = totalQuantity,
                             totalPrice = totalPrice,
                             onClick = {
-                                // PERUBAHAN: Menggunakan logika navigasi yang sama dengan BottomNavBar
                                 navController.navigate(Screen.Checkout.route) {
                                     popUpTo(navController.graph.findStartDestination().id) {
                                         saveState = true
@@ -107,7 +106,6 @@ fun PolattaApp() {
                             itemCount = totalQuantity,
                             totalPrice = totalPrice,
                             onClick = {
-                                // PERUBAHAN: Menggunakan logika navigasi yang sama dengan BottomNavBar
                                 navController.navigate(Screen.Checkout.route) {
                                     popUpTo(navController.graph.findStartDestination().id) {
                                         saveState = true
@@ -134,7 +132,6 @@ fun PolattaApp() {
             }
         }
         composable(Screen.Checkout.route) {
-            // PERUBAHAN: Scaffold untuk Checkout Screen sekarang diatur di sini
             Scaffold(
                 topBar = {
                     TopAppBar(
@@ -152,6 +149,22 @@ fun PolattaApp() {
             ) { innerPadding ->
                 CheckoutScreen(
                     menuViewModel = menuViewModel,
+                    modifier = Modifier.padding(innerPadding)
+                )
+            }
+        }
+
+        composable(Screen.Status.route) {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = { Text("Activity") },
+                        colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surface)
+                    )
+                },
+                bottomBar = { BottomNavBar(navController = navController) }
+            ) { innerPadding ->
+                StatusScreenContent(
                     modifier = Modifier.padding(innerPadding)
                 )
             }

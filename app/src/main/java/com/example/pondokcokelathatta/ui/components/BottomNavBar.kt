@@ -3,8 +3,8 @@ package com.example.pondokcokelathatta.ui.components
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
+import androidx.compose.material.icons.outlined.ListAlt
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
@@ -29,9 +29,9 @@ private data class BottomNavItem(val label: String, val icon: ImageVector, val s
 fun BottomNavBar(navController: NavController) {
     val navItems = listOf(
         BottomNavItem("Home", Icons.Default.Home, Screen.Home),
-        BottomNavItem("Order", Icons.Default.ShoppingCart, Screen.Checkout), // Diubah ke Screen.Checkout
-        BottomNavItem("Favorit", Icons.Default.Favorite, Screen.Favorite),
-        BottomNavItem("Profile", Icons.Default.Person, Screen.Profile) // CHANGED: from Screen.Home to Screen.Profile
+        BottomNavItem("Order", Icons.Default.ShoppingCart, Screen.Checkout),
+        BottomNavItem("Status", Icons.Outlined.ListAlt, Screen.Status),
+        BottomNavItem("Favorit", Icons.Default.Favorite, Screen.Favorite)
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
