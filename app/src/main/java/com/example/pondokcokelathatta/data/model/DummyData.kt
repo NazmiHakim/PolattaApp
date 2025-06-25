@@ -158,7 +158,10 @@ object DummyData {
      * Ambil beberapa item dari daftar menu di atas untuk dijadikan rekomendasi.
      */
     val recommendations: List<MenuItem> = listOf(
-        chocoLatte, // Contoh: Choco Latte adalah item rekomendasi
-        chocoMilk   // Contoh: Choco Milk juga rekomendasi
+        chocoLatte,     // Contoh: Choco Latte adalah item rekomendasi
+        chocoMilk,      // Contoh: Choco Milk juga rekomendasi
+        chocoBreeze,    // Item Tambahan
+        chocoMint,
+        cimoryStrawberry// Item Tambahan
     )
 }

@@ -33,7 +33,7 @@ fun CheckoutScreen(
                 .fillMaxSize()
                 // Menambahkan padding di bagian bawah agar tidak tertutup oleh tombol
                 .padding(bottom = 80.dp),
-            contentPadding = PaddingValues(horizontal = 16.dp)
+            contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp)
         ) {
             // Judul "Order Details"
             item {
@@ -76,8 +76,12 @@ fun CheckoutScreen(
                 .align(Alignment.BottomCenter)
                 .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
             shape = RoundedCornerShape(12.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFF00880F), // Warna hijau
+                contentColor = Color.White // Warna teks putih
+            )
         ) {
-            Text("Place delivery order", modifier = Modifier.padding(vertical = 8.dp))
+            Text("Place delivery order", color = Color.White, modifier = Modifier.padding(vertical = 8.dp))
         }
     }
 }

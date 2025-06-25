@@ -38,7 +38,6 @@ fun ChatScreen(
     val adminName = "BDJ-16"
     var textState by remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
-    // val scope = rememberCoroutineScope() // VARIABEL INI DIHAPUS KARENA TIDAK DIGUNAKAN
     val listState = rememberLazyListState()
 
     // Daftar pesan yang disimulasikan
@@ -87,6 +86,8 @@ fun ChatScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .navigationBarsPadding() // Menambahkan padding untuk navigation bar
+                    .imePadding() // Menambahkan padding untuk keyboard
                     .padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {

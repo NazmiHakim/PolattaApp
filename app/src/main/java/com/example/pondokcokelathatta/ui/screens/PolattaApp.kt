@@ -4,7 +4,6 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -161,8 +160,7 @@ fun PolattaApp() {
                                 Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back")
                             }
                         },
-                        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White),
-                        modifier = Modifier.offset(y = (-28).dp)
+                        colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
                     )
                 },
                 bottomBar = { BottomNavBar(navController = navController) }
