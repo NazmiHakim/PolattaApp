@@ -16,7 +16,7 @@ import androidx.compose.ui.unit.sp
 import com.example.pondokcokelathatta.ui.theme.TextPrimary
 
 @Composable
-fun TopBar() {
+fun TopBar(onChatClick: () -> Unit) { // MODIFIKASI: Tambahkan parameter onChatClick
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -26,7 +26,7 @@ fun TopBar() {
     ) {
         Text("Polatta", fontSize = 24.sp, fontWeight = FontWeight.Bold, color = TextPrimary)
         Spacer(modifier = Modifier.weight(1f)) // Mendorong ikon ke kanan
-        IconButton(onClick = { /* TODO: Aksi klik untuk pesan */ }) {
+        IconButton(onClick = onChatClick) { // MODIFIKASI: Panggil onChatClick di sini
             Icon(
                 imageVector = Icons.Outlined.ChatBubbleOutline,
                 contentDescription = "Message",

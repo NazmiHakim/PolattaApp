@@ -117,8 +117,6 @@ fun HistoryTab() {
         }
     }
 }
-
-
                 // Please add the image 'history_item_image.png' to your drawable resources
 //                Image(
 //                    painter = painterResource(id = R.drawable.history_item_image),

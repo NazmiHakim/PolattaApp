@@ -18,7 +18,8 @@ import com.example.pondokcokelathatta.ui.viewmodel.MenuViewModel
 fun PolattaScreen(
     modifier: Modifier = Modifier,
     onItemClick: (MenuItem) -> Unit,
-    onProfileClick: () -> Unit, // ADD THIS PARAMETER
+    onProfileClick: () -> Unit,
+    onChatClick: () -> Unit, // TAMBAHKAN PARAMETER INI
     menuViewModel: MenuViewModel,
     showCheckoutButton: Boolean
 ) {
@@ -48,7 +49,7 @@ fun PolattaScreen(
         modifier = modifier.fillMaxSize(),
         contentPadding = PaddingValues(bottom = if (showCheckoutButton) 80.dp else 0.dp)
     ) {
-        item { TopBar() }
+        item { TopBar(onChatClick = onChatClick) }
         item { SearchBar(query = searchQuery, onQueryChange = { searchQuery = it }) }
 
         if (filteredMenuItems != null) {

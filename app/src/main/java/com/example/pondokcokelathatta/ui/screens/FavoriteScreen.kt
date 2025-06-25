@@ -20,12 +20,13 @@ fun FavoriteScreen(
     modifier: Modifier = Modifier,
     menuViewModel: MenuViewModel,
     onItemClick: (MenuItem) -> Unit,
-    showCheckoutButton: Boolean
+    showCheckoutButton: Boolean,
+    onChatClick: () -> Unit // TAMBAHKAN PARAMETER INI
 ) {
     val favoriteItems by menuViewModel.favorites.collectAsState()
 
     Column(modifier = modifier.fillMaxSize()) {
-        TopBar()
+        TopBar(onChatClick = onChatClick) // PERBARUI BARIS INI
         if (favoriteItems.isEmpty()) {
             Box(
                 contentAlignment = Alignment.Center,

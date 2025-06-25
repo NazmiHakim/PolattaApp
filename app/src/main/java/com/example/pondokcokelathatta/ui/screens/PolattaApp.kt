@@ -55,6 +55,9 @@ fun PolattaApp() {
                         onProfileClick = {
                             navController.navigate(Screen.Profile.route)
                         },
+                        onChatClick = {
+                            navController.navigate(Screen.ChatList.route)
+                        },
                         showCheckoutButton = showCheckoutButton
                     )
                     AnimatedVisibility(
@@ -92,6 +95,9 @@ fun PolattaApp() {
                         onItemClick = { menuItem ->
                             navController.navigate(Screen.Detail.createRoute(menuItem.name))
                         },
+                        onChatClick = {
+                            navController.navigate(Screen.ChatList.route)
+                        },
                         showCheckoutButton = showCheckoutButton
                     )
                     AnimatedVisibility(
@@ -119,6 +125,20 @@ fun PolattaApp() {
                 }
             }
         }
+
+        composable(Screen.ChatList.route) {
+            ChatListScreen(
+                navController = navController,
+                onBack = { navController.popBackStack() }
+            )
+        }
+
+        composable(Screen.ChatDetail.route) {
+            ChatScreen(
+                onBack = { navController.popBackStack() }
+            )
+        }
+
         composable(Screen.Detail.route) { backStackEntry ->
             val itemName = backStackEntry.arguments?.getString("itemName")
             val menuItem = (DummyData.recommendations + DummyData.menuItems).find { it.name == itemName }
@@ -153,7 +173,6 @@ fun PolattaApp() {
                 )
             }
         }
-
         composable(Screen.Status.route) {
             Scaffold(
                 topBar = {
@@ -169,7 +188,6 @@ fun PolattaApp() {
                 )
             }
         }
-
         composable(Screen.Profile.route) {
             Scaffold(
                 topBar = {
