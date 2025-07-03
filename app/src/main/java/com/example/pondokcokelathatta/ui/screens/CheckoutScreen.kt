@@ -13,7 +13,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.pondokcokelathatta.ui.components.MenuCard
+import com.example.pondokcokelathatta.ui.navigation.Screen
 import com.example.pondokcokelathatta.ui.viewmodel.MenuViewModel
 import java.text.NumberFormat
 import java.util.Locale
@@ -21,6 +23,7 @@ import java.util.Locale
 @Composable
 fun CheckoutScreen(
     menuViewModel: MenuViewModel,
+    navController: NavController, // Tambahkan NavController
     modifier: Modifier = Modifier
 ) {
     val orderedItems by menuViewModel.orderedItems.collectAsState()
@@ -31,11 +34,9 @@ fun CheckoutScreen(
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                // Menambahkan padding di bagian bawah agar tidak tertutup oleh tombol
                 .padding(bottom = 80.dp),
             contentPadding = PaddingValues(horizontal = 16.dp, vertical = 16.dp)
         ) {
-            // Judul "Order Details"
             item {
                 Text(
                     "Order Details",
@@ -44,19 +45,17 @@ fun CheckoutScreen(
                 )
             }
 
-            // Daftar item yang dipesan
             items(orderedItems.toList()) { (item, quantity) ->
                 MenuCard(
                     item = item,
                     quantity = quantity,
                     onIncrease = { menuViewModel.increaseQuantity(item) },
                     onDecrease = { menuViewModel.decreaseQuantity(item) },
-                    onClick = { } // Biarkan kosong agar tidak navigasi dari halaman ini
+                    onClick = { }
                 )
                 Spacer(Modifier.height(8.dp))
             }
 
-            // Rincian Pembayaran
             item {
                 Spacer(modifier = Modifier.height(24.dp))
                 Text("Payment summary", style = MaterialTheme.typography.titleLarge)
@@ -68,25 +67,32 @@ fun CheckoutScreen(
             }
         }
 
-        // Tombol ini sekarang berada di dalam Box dan akan tampil di atas konten LazyColumn
+        // Tombol diubah untuk memproses pesanan dan navigasi
         Button(
-            onClick = { /* TODO: Logika untuk memesan */ },
+            onClick = {
+                menuViewModel.placeOrder()
+                navController.navigate(Screen.Status.route) {
+                    // Membersihkan backstack hingga ke home
+                    popUpTo(Screen.Home.route)
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
                 .padding(start = 16.dp, end = 16.dp, bottom = 16.dp),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF00880F), // Warna hijau
-                contentColor = Color.White // Warna teks putih
-            )
+                containerColor = Color(0xFF00880F),
+                contentColor = Color.White
+            ),
+            enabled = orderedItems.isNotEmpty() // Tombol aktif hanya jika ada item
         ) {
             Text("Place delivery order", color = Color.White, modifier = Modifier.padding(vertical = 8.dp))
         }
     }
 }
 
-// Composable ini tidak berubah
+// Composable PaymentDetailRow tidak berubah
 @Composable
 fun PaymentDetailRow(label: String, amount: Int, isDiscount: Boolean = false, isTotal: Boolean = false) {
     val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))

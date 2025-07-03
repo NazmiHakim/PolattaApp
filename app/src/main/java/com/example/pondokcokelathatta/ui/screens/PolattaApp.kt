@@ -163,10 +163,11 @@ fun PolattaApp() {
                         colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
                     )
                 },
-                bottomBar = { BottomNavBar(navController = navController) }
+                // Hapus bottomBar agar tidak ada navigasi ganda
             ) { innerPadding ->
                 CheckoutScreen(
                     menuViewModel = menuViewModel,
+                    navController = navController, // Teruskan navController
                     modifier = Modifier.padding(innerPadding)
                 )
             }
@@ -181,8 +182,10 @@ fun PolattaApp() {
                 },
                 bottomBar = { BottomNavBar(navController = navController) }
             ) { innerPadding ->
+                // Teruskan menuViewModel ke StatusScreenContent
                 StatusScreenContent(
-                    modifier = Modifier.padding(innerPadding)
+                    modifier = Modifier.padding(innerPadding),
+                    menuViewModel = menuViewModel
                 )
             }
         }

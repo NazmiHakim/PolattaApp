@@ -10,32 +10,34 @@ import androidx.lifecycle.viewModelScope
 import com.example.pondokcokelathatta.data.datasource.DummyMenuDataSource
 import com.example.pondokcokelathatta.data.repository.MenuRepository
 import com.example.pondokcokelathatta.model.MenuItem
+import com.example.pondokcokelathatta.model.Order
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 
-// Nanti, Repository akan di-inject melalui constructor menggunakan Hilt.
-// Contoh: @HiltViewModel class MenuViewModel @Inject constructor(private val menuRepository: MenuRepository) : ViewModel()
 class MenuViewModel(application: Application) : AndroidViewModel(application) {
 
-    // --- BAGIAN REPOSITORY (PERUBAHAN UTAMA) ---
-    // Inisialisasi Repository. Untuk sementara kita buat instance langsung.
     private val menuRepository = MenuRepository(DummyMenuDataSource())
-
-    // Mengambil semua data dari Repository, bukan DummyData langsung.
     private val allMenuItems =
         (menuRepository.getAllMenuItems() + menuRepository.getRecommendedItems())
             .distinct()
             .associateBy { it.name }
-
-    // --- Sisa kode sebagian besar tetap sama ---
 
     private val _quantities = mutableStateMapOf<String, Int>()
     val quantities: Map<String, Int> get() = _quantities
 
     private val _favorites = MutableStateFlow<Set<MenuItem>>(emptySet())
     val favorites = _favorites.asStateFlow()
+
+    // --- PERUBAHAN UTAMA: State untuk Pesanan ---
+    private val _ongoingOrders = MutableStateFlow<List<Order>>(emptyList())
+    val ongoingOrders = _ongoingOrders.asStateFlow()
+
+    private val _historyOrders = MutableStateFlow<List<Order>>(emptyList())
+    val historyOrders = _historyOrders.asStateFlow()
+    // -------------------------------------------
 
     private val sharedPreferences = application.getSharedPreferences("polatta_favorite_prefs", Context.MODE_PRIVATE)
 
@@ -48,7 +50,6 @@ class MenuViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private fun loadFavorites() {
-        // Logika ini sudah benar, karena menggunakan allMenuItems yang sudah diperbarui.
         val favoriteNames = sharedPreferences.getStringSet(FAVORITES_KEY, emptySet()) ?: emptySet()
         _favorites.value = allMenuItems.values.filter { it.name in favoriteNames }.toSet()
     }
@@ -75,7 +76,7 @@ class MenuViewModel(application: Application) : AndroidViewModel(application) {
 
     fun toggleFavorite(item: MenuItem) {
         val currentFavorites = _favorites.value.toMutableSet()
-        val menuItemFromRepo = allMenuItems[item.name] // Pastikan item ada di sumber data utama
+        val menuItemFromRepo = allMenuItems[item.name]
 
         if (menuItemFromRepo != null) {
             if (currentFavorites.any { it.name == menuItemFromRepo.name }) {
@@ -118,4 +119,25 @@ class MenuViewModel(application: Application) : AndroidViewModel(application) {
         started = SharingStarted.WhileSubscribed(5000),
         initialValue = emptyMap()
     )
+
+    // --- FUNGSI BARU UNTUK MANAJEMEN PESANAN ---
+    fun placeOrder() {
+        val itemsToOrder = orderedItems.value
+        if (itemsToOrder.isNotEmpty()) {
+            val newOrder = Order(
+                items = itemsToOrder,
+                totalPrice = totalPrice.value
+            )
+            _ongoingOrders.update { currentOrders -> currentOrders + newOrder }
+            // Hapus item dari keranjang setelah pesanan dibuat
+            _quantities.clear()
+        }
+    }
+
+    fun completeOrder(order: Order) {
+        // Pindahkan dari ongoing ke history
+        _ongoingOrders.update { currentOrders -> currentOrders.filterNot { it.id == order.id } }
+        _historyOrders.update { currentHistory -> currentHistory + order.copy(status = com.example.pondokcokelathatta.model.OrderStatus.COMPLETED) }
+    }
+    // ------------------------------------------
 }
