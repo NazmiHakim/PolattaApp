@@ -24,6 +24,7 @@ import com.example.pondokcokelathatta.R
 import com.example.pondokcokelathatta.model.MenuItem
 import com.example.pondokcokelathatta.ui.theme.TextPrimary
 import com.example.pondokcokelathatta.ui.viewmodel.MenuViewModel
+import com.example.pondokcokelathatta.ui.viewmodel.UiState
 
 @Composable
 fun DetailScreen(
@@ -31,8 +32,15 @@ fun DetailScreen(
     onBack: () -> Unit,
     menuViewModel: MenuViewModel = viewModel()
 ) {
-    val favorites by menuViewModel.favorites.collectAsState()
-    val isFavorite = favorites.contains(menuItem)
+    // --- PERBAIKAN ---
+    // Menggunakan favoritesUiState dan menangani statusnya
+    val favoritesUiState by menuViewModel.favoritesUiState.collectAsState()
+
+    // Tentukan apakah item ini favorit hanya jika state-nya Success
+    val isFavorite = when (val state = favoritesUiState) {
+        is UiState.Success -> state.data.any { it.name == menuItem.name }
+        else -> false // Anggap tidak favorit saat loading atau error
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
@@ -46,7 +54,7 @@ fun DetailScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 32.dp, start = 16.dp, end = 16.dp), // Tombol diturunkan
+                    .padding(top = 32.dp, start = 16.dp, end = 16.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -82,13 +90,13 @@ fun DetailScreen(
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "Choco Series", // Assuming static for now
+                    text = menuItem.category, // Menggunakan kategori dinamis dari data
                     color = Color.White.copy(alpha = 0.8f),
                     fontSize = 18.sp
                 )
                 Spacer(modifier = Modifier.height(12.dp))
                 Text(
-                    text = "%,d".format(menuItem.price).replace(',', '.'),
+                    text = "Rp%,d".format(menuItem.price).replace(',', '.'),
                     color = Color.White,
                     fontSize = 28.sp,
                     fontWeight = FontWeight.Bold
@@ -133,14 +141,14 @@ fun DetailScreen(
                     )
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Espresso with chocolate and steamed milk, often topped with whipped cream.",
+                        text = menuItem.description, // Menggunakan deskripsi dari data
                         fontSize = 14.sp,
                         color = TextPrimary.copy(alpha = 0.7f),
                         lineHeight = 20.sp
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = "⭐ 4/5")
+                        Text(text = "⭐ 4.8 / 5.0 (ulasan dummy)") // Contoh rating
                     }
                 }
             }
