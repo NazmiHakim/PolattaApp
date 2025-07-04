@@ -28,10 +28,10 @@ fun PolattaScreen(
 ) {
     val menuUiState by menuViewModel.menuUiState.collectAsState()
     val recommendationsUiState by menuViewModel.recommendationsUiState.collectAsState()
-    var searchQuery by remember { mutableStateOf("") }
+    // --- PERBAIKAN 1: Ambil state kuantitas dengan collectAsState ---
+    val quantities by menuViewModel.quantities.collectAsState()
 
-    // --- PERBAIKAN KUNCI ---
-    // Pindahkan 'remember' ke konteks @Composable yang benar (di tingkat atas fungsi)
+    var searchQuery by remember { mutableStateOf("") }
     val selectedTab = remember { mutableStateOf("Choco Series") }
 
     LazyColumn(
@@ -58,7 +58,10 @@ fun PolattaScreen(
                     }
                 }
                 is UiState.Success -> RecommendationSection(state.data, onItemClick)
-                is UiState.Error -> ErrorState(message = state.message, onRetry = { menuViewModel.loadAllData() })
+                is UiState.Error -> {
+                    // --- PERBAIKAN 2: Panggil fungsi refreshData() yang bersifat public ---
+                    ErrorState(message = state.message, onRetry = { menuViewModel.refreshData() })
+                }
             }
         }
 
@@ -95,7 +98,7 @@ fun PolattaScreen(
                         item { EmptyState(message = "Menu '${searchQuery}' tidak ditemukan.") }
                     } else {
                         items(items = filteredMenuItems, key = { it.name }) { item ->
-                            MenuCardContainer(item, menuViewModel, onItemClick)
+                            MenuCardContainer(item, menuViewModel, quantities, onItemClick)
                         }
                     }
                 } else {
@@ -107,14 +110,15 @@ fun PolattaScreen(
                         item { EmptyState(message = "Menu untuk kategori ini belum tersedia.") }
                     } else {
                         items(items = menuItemsByCategory, key = { it.name }) { item ->
-                            MenuCardContainer(item, menuViewModel, onItemClick)
+                            MenuCardContainer(item, menuViewModel, quantities, onItemClick)
                         }
                     }
                 }
             }
             is UiState.Error -> {
                 item {
-                    ErrorState(message = state.message, onRetry = { menuViewModel.loadAllData() })
+                    // --- PERBAIKAN 3: Panggil fungsi refreshData() yang bersifat public ---
+                    ErrorState(message = state.message, onRetry = { menuViewModel.refreshData() })
                 }
             }
         }
@@ -125,12 +129,15 @@ fun PolattaScreen(
 private fun MenuCardContainer(
     item: MenuItem,
     menuViewModel: MenuViewModel,
+    // --- PERBAIKAN 4: Terima map kuantitas sebagai parameter ---
+    quantities: Map<String, Int>,
     onItemClick: (MenuItem) -> Unit
 ) {
     Box(Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
         MenuCard(
             item = item,
-            quantity = menuViewModel.quantities[item.name] ?: 0,
+            // --- PERBAIKAN 5: Gunakan map kuantitas yang sudah diterima ---
+            quantity = quantities[item.name] ?: 0,
             onIncrease = { menuViewModel.increaseQuantity(item) },
             onDecrease = { menuViewModel.decreaseQuantity(item) },
             onClick = { onItemClick(item) }
