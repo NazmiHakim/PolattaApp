@@ -29,7 +29,7 @@ import com.example.pondokcokelathatta.ui.viewmodel.MenuViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun PolattaApp() {
+fun PolattaApp(startDestination: String) {
     val navController = rememberNavController()
     val menuViewModel: MenuViewModel = viewModel()
 
@@ -39,8 +39,19 @@ fun PolattaApp() {
 
     NavHost(
         navController = navController,
-        startDestination = Screen.Home.route,
+        startDestination = startDestination,
     ) {
+        composable(Screen.Login.route) {
+            LoginScreen { role ->
+                val destination = if (role == "admin") Screen.Admin.route else Screen.Home.route
+                navController.navigate(destination) {
+                    popUpTo(Screen.Login.route) { inclusive = true }
+                }
+            }
+        }
+        composable(Screen.Admin.route) {
+            AdminScreen(navController = navController)
+        }
         composable(Screen.Home.route) {
             Scaffold(
                 bottomBar = { BottomNavBar(navController = navController) }
@@ -163,11 +174,10 @@ fun PolattaApp() {
                         colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
                     )
                 },
-                // Hapus bottomBar agar tidak ada navigasi ganda
             ) { innerPadding ->
                 CheckoutScreen(
                     menuViewModel = menuViewModel,
-                    navController = navController, // Teruskan navController
+                    navController = navController,
                     modifier = Modifier.padding(innerPadding)
                 )
             }
@@ -182,7 +192,6 @@ fun PolattaApp() {
                 },
                 bottomBar = { BottomNavBar(navController = navController) }
             ) { innerPadding ->
-                // Teruskan menuViewModel ke StatusScreenContent
                 StatusScreenContent(
                     modifier = Modifier.padding(innerPadding),
                     menuViewModel = menuViewModel
