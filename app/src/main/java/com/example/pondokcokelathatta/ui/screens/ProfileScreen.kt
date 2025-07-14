@@ -6,11 +6,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.outlined.HelpOutline
 import androidx.compose.material.icons.outlined.ListAlt
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -19,14 +22,19 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.pondokcokelathatta.ui.navigation.Screen
+import com.example.pondokcokelathatta.ui.viewmodel.AuthViewModel
 
 @Composable
 fun ProfileScreen(
     navController: NavController,
+    authViewModel: AuthViewModel,
     modifier: Modifier = Modifier
 ) {
+    val authState by authViewModel.authState.collectAsState()
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -81,6 +89,16 @@ fun ProfileScreen(
                 title = "Help center",
                 onClick = { /* TODO: Navigate to Help Center */ }
             )
+
+            // Tampilkan menu admin jika pengguna adalah admin
+            if (authState is AuthViewModel.AuthState.Authenticated && (authState as AuthViewModel.AuthState.Authenticated).role == "admin") {
+                ProfileMenuItem(
+                    icon = Icons.Default.AdminPanelSettings,
+                    title = "Admin Dashboard",
+                    subtitle = "Manage application data",
+                    onClick = { navController.navigate(Screen.Admin.route) }
+                )
+            }
         }
     }
 }

@@ -25,6 +25,7 @@ import com.example.pondokcokelathatta.data.model.DummyData
 import com.example.pondokcokelathatta.ui.components.BottomNavBar
 import com.example.pondokcokelathatta.ui.components.CheckoutButton
 import com.example.pondokcokelathatta.ui.navigation.Screen
+import com.example.pondokcokelathatta.ui.viewmodel.AuthViewModel
 import com.example.pondokcokelathatta.ui.viewmodel.MenuViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -32,6 +33,7 @@ import com.example.pondokcokelathatta.ui.viewmodel.MenuViewModel
 fun PolattaApp(startDestination: String) {
     val navController = rememberNavController()
     val menuViewModel: MenuViewModel = viewModel()
+    val authViewModel: AuthViewModel = viewModel()
 
     val totalQuantity by menuViewModel.totalQuantity.collectAsState()
     val totalPrice by menuViewModel.totalPrice.collectAsState()
@@ -42,9 +44,9 @@ fun PolattaApp(startDestination: String) {
         startDestination = startDestination,
     ) {
         composable(Screen.Login.route) {
-            LoginScreen { role ->
-                val destination = if (role == "admin") Screen.Admin.route else Screen.Home.route
-                navController.navigate(destination) {
+            LoginScreen(authViewModel = authViewModel) {
+                // Navigasi ke halaman utama untuk semua peran setelah login berhasil
+                navController.navigate(Screen.Home.route) {
                     popUpTo(Screen.Login.route) { inclusive = true }
                 }
             }
@@ -215,6 +217,7 @@ fun PolattaApp(startDestination: String) {
             ) { innerPadding ->
                 ProfileScreen(
                     navController = navController,
+                    authViewModel = authViewModel,
                     modifier = Modifier.padding(innerPadding)
                 )
             }
