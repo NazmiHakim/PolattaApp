@@ -2,7 +2,6 @@ package com.example.pondokcokelathatta.data.repository
 
 import android.content.Context
 import android.content.Intent
-import com.example.pondokcokelathatta.model.User
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.firebase.auth.FirebaseAuth
@@ -34,5 +33,9 @@ class AuthRepository(private val context: Context) {
             .build()
         val googleSignInClient = GoogleSignIn.getClient(context, gso)
         return googleSignInClient.signInIntent
+    }
+
+    fun signOut() {
+        auth.signOut()
     }
 }

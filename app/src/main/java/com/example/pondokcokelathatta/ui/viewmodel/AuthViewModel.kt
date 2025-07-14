@@ -60,4 +60,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         val webClientId = "308223894643-g5vli7k3ap6024h0k2ejcssncj2m9mja.apps.googleusercontent.com"
         return repository.getGoogleSignInIntent(webClientId)
     }
+
+    fun signOut() {
+        repository.signOut()
+        _authState.value = AuthState.Unauthenticated
+    }
 }
