@@ -18,9 +18,24 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
 
     sealed class AuthState {
         data class Authenticated(val user: FirebaseUser, val role: String) : AuthState()
-        object Unauthenticated : AuthState()
-        object Loading : AuthState()
+        data object Unauthenticated : AuthState()
+        data object Loading : AuthState()
         data class Error(val message: String) : AuthState()
+    }
+
+    init {
+        viewModelScope.launch {
+            val currentUser = repository.getCurrentUser()
+            if (currentUser != null) {
+                _authState.value = AuthState.Loading
+                try {
+                    val role = repository.getUserRole(currentUser.uid)
+                    _authState.value = AuthState.Authenticated(currentUser, role)
+                } catch (e: Exception) {
+                    _authState.value = AuthState.Error(e.message ?: "Unknown error")
+                }
+            }
+        }
     }
 
     fun getCurrentUser(): FirebaseUser? {
