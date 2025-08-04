@@ -24,6 +24,8 @@ class MenuViewModel(application: Application) : AndroidViewModel(application) {
 
     private val menuRepository = MenuRepository(DummyMenuDataSource())
     private val sharedPreferences = application.getSharedPreferences("polatta_favorite_prefs", Context.MODE_PRIVATE)
+    val authViewModel = AuthViewModel(application)
+
 
     companion object {
         private const val FAVORITES_KEY = "favorite_menu_items"
@@ -106,7 +108,10 @@ class MenuViewModel(application: Application) : AndroidViewModel(application) {
                 .collect { _menuUiState.value = UiState.Success(it) }
 
             menuRepository.getRecommendedItems()
-                .catch { e -> _recommendationsUiState.value = UiState.Error("Gagal memuat rekomendasi: ${e.message}") }
+                .catch { e ->
+                    _recommendationsUiState.value =
+                        UiState.Error("Gagal memuat rekomendasi: ${e.message}")
+                }
                 .collect { _recommendationsUiState.value = UiState.Success(it) }
         }
     }
@@ -166,5 +171,9 @@ class MenuViewModel(application: Application) : AndroidViewModel(application) {
     fun completeOrder(order: Order) {
         _ongoingOrders.update { currentOrders -> currentOrders.filterNot { it.id == order.id } }
         _historyOrders.update { currentHistory -> currentHistory + order.copy(status = OrderStatus.COMPLETED) }
+    }
+
+    fun cancelOrder(order: Order) {
+        _ongoingOrders.update { currentOrders -> currentOrders.filterNot { it.id == order.id } }
     }
 }

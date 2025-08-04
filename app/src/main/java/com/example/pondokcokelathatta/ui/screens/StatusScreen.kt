@@ -19,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -29,6 +30,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.pondokcokelathatta.model.Order
+import com.example.pondokcokelathatta.model.OrderStatus
+import com.example.pondokcokelathatta.ui.viewmodel.AuthViewModel
 import com.example.pondokcokelathatta.ui.viewmodel.MenuViewModel
 import java.text.NumberFormat
 import java.util.Locale
@@ -42,6 +45,50 @@ fun StatusScreenContent(
     val tabs = listOf("Ongoing", "History")
     val ongoingOrders by menuViewModel.ongoingOrders.collectAsState()
     val historyOrders by menuViewModel.historyOrders.collectAsState()
+    var showCancelDialog by remember { mutableStateOf<Order?>(null) }
+    var cancellationReason by remember { mutableStateOf("") }
+    val authState by menuViewModel.authViewModel.authState.collectAsState()
+    val isAdmin = (authState as? AuthViewModel.AuthState.Authenticated)?.role == "admin"
+
+    if (showCancelDialog != null) {
+        AlertDialog(
+            onDismissRequest = { showCancelDialog = null },
+            title = { Text("Batalkan Pesanan") },
+            text = {
+                Column {
+                    Text("Apakah Anda yakin ingin membatalkan pesanan ini?")
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = cancellationReason,
+                        onValueChange = { cancellationReason = it },
+                        label = { Text("Alasan Pembatalan") }
+                    )
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        showCancelDialog?.let { order ->
+                            menuViewModel.cancelOrder(order)
+                        }
+                        showCancelDialog = null
+                        cancellationReason = ""
+                    },
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = Color.Red
+                    )
+                ) {
+                    Text("Ya, Batalkan", color = Color.White)
+                }
+            },
+            dismissButton = {
+                Button(onClick = { showCancelDialog = null }) {
+                    Text("Tidak")
+                }
+            }
+        )
+    }
+
 
     Column(modifier = modifier.fillMaxSize()) {
         TabRow(
@@ -61,7 +108,9 @@ fun StatusScreenContent(
         when (selectedTabIndex) {
             0 -> OngoingTab(
                 orders = ongoingOrders,
-                onCompleteClick = { order -> menuViewModel.completeOrder(order) }
+                onCompleteClick = { order -> menuViewModel.completeOrder(order) },
+                onCancelClick = { order -> showCancelDialog = order },
+                isAdmin = isAdmin
             )
             1 -> HistoryTab(orders = historyOrders)
         }
@@ -69,7 +118,12 @@ fun StatusScreenContent(
 }
 
 @Composable
-fun OngoingTab(orders: List<Order>, onCompleteClick: (Order) -> Unit) {
+fun OngoingTab(
+    orders: List<Order>,
+    onCompleteClick: (Order) -> Unit,
+    onCancelClick: (Order) -> Unit,
+    isAdmin: Boolean
+) {
     if (orders.isEmpty()) {
         EmptyState(
             title = "Ayo Pesan Sekarang!",
@@ -83,7 +137,13 @@ fun OngoingTab(orders: List<Order>, onCompleteClick: (Order) -> Unit) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(orders) { order ->
-                OrderCard(order = order, onActionClick = { onCompleteClick(order) }, actionLabel = "Selesai")
+                OrderCard(
+                    order = order,
+                    onActionClick = { onCompleteClick(order) },
+                    actionLabel = "Selesai",
+                    onCancelClick = { onCancelClick(order) },
+                    isAdmin = isAdmin
+                )
             }
         }
     }
@@ -102,16 +162,22 @@ fun HistoryTab(orders: List<Order>) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(orders) { order ->
-                OrderCard(order = order, actionLabel = "Pesan Lagi") {
+                OrderCard(order = order, actionLabel = "Pesan Lagi", onActionClick = {
                     // Logika untuk memesan lagi bisa ditambahkan di sini
-                }
+                })
             }
         }
     }
 }
 
 @Composable
-fun OrderCard(order: Order, actionLabel: String, onActionClick: () -> Unit) {
+fun OrderCard(
+    order: Order,
+    actionLabel: String,
+    onActionClick: () -> Unit,
+    onCancelClick: (() -> Unit)? = null,
+    isAdmin: Boolean = false
+) {
     val formatter = NumberFormat.getNumberInstance(Locale("in", "ID"))
 
     Card(
@@ -147,7 +213,11 @@ fun OrderCard(order: Order, actionLabel: String, onActionClick: () -> Unit) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text("Total Harga", fontWeight = FontWeight.Bold)
-                Text("Rp${formatter.format(order.totalPrice)}", fontWeight = FontWeight.Bold, fontSize = 16.sp)
+                Text(
+                    "Rp${formatter.format(order.totalPrice)}",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 16.sp
+                )
             }
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -164,16 +234,37 @@ fun OrderCard(order: Order, actionLabel: String, onActionClick: () -> Unit) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            Button(
-                onClick = onActionClick,
-                modifier = Modifier.align(Alignment.End),
-                shape = RoundedCornerShape(8.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = if (order.status == com.example.pondokcokelathatta.model.OrderStatus.ONGOING) Color(0xFF00880F) else MaterialTheme.colorScheme.primary,
-                    contentColor = Color.White
-                )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(actionLabel)
+                if (onCancelClick != null && order.status == OrderStatus.ONGOING) {
+                    Button(
+                        onClick = onCancelClick,
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Color.Red,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text("Cancel")
+                    }
+                    Spacer(modifier = Modifier.width(8.dp))
+                }
+
+                if (isAdmin || order.status != OrderStatus.ONGOING) {
+                    Button(
+                        onClick = onActionClick,
+                        shape = RoundedCornerShape(8.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = if (order.status == OrderStatus.ONGOING) Color(0xFF00880F) else MaterialTheme.colorScheme.primary,
+                            contentColor = Color.White
+                        )
+                    ) {
+                        Text(actionLabel, color = Color.White)
+                    }
+                }
             }
         }
     }
