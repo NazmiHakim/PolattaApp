@@ -22,6 +22,7 @@ sealed interface UiState<out T> {
 
 class MenuViewModel(application: Application) : AndroidViewModel(application) {
 
+    // Gunakan interface untuk DI (Dependency Injection) di masa depan
     private val menuRepository = MenuRepository(DummyMenuDataSource())
     private val sharedPreferences = application.getSharedPreferences("polatta_favorite_prefs", Context.MODE_PRIVATE)
     val authViewModel = AuthViewModel(application)
@@ -43,6 +44,7 @@ class MenuViewModel(application: Application) : AndroidViewModel(application) {
     private val _quantities = MutableStateFlow<Map<String, Int>>(emptyMap())
     val quantities: StateFlow<Map<String, Int>> = _quantities.asStateFlow()
 
+    // State untuk pesanan, ini bisa dipindahkan ke Repository sendiri nantinya
     private val _ongoingOrders = MutableStateFlow<List<Order>>(emptyList())
     val ongoingOrders: StateFlow<List<Order>> = _ongoingOrders.asStateFlow()
 
@@ -54,19 +56,19 @@ class MenuViewModel(application: Application) : AndroidViewModel(application) {
         .map { list -> list.associateBy { it.name } }
         .stateIn(viewModelScope, SharingStarted.Lazily, emptyMap())
 
-    // State untuk daftar item favorit
     val favoritesUiState: StateFlow<UiState<List<MenuItem>>> = combine(
         allItemsFlow,
         _favoritesState
     ) { allItems, favoriteNames ->
         val favoriteItems = favoriteNames.mapNotNull { allItems[it] }
-        // --- PERBAIKAN DI SINI ---
-        // Memberi tahu compiler bahwa tipe keluarannya adalah UiState<List<MenuItem>>
-        UiState.Success(favoriteItems) as UiState<List<MenuItem>>
-    }.catch {
-        // Blok catch sekarang dapat dengan aman memancarkan UiState.Error
-        emit(UiState.Error("Gagal memuat favorit."))
-    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), UiState.Loading)
+        UiState.Success(favoriteItems) as UiState<List<MenuItem>> // Cast eksplisit
+    }.catch { e ->
+        emit(UiState.Error("Gagal memuat favorit: ${e.message}"))
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.WhileSubscribed(5000),
+        initialValue = UiState.Loading
+    )
 
 
     // State untuk item yang dipesan (kuantitas > 0)
@@ -93,6 +95,7 @@ class MenuViewModel(application: Application) : AndroidViewModel(application) {
         loadFavoritesFromPrefs()
     }
 
+    // Fungsi ini dibuat public agar bisa dipanggil dari UI (misal: pull-to-refresh)
     fun refreshData() {
         loadAllData()
     }
@@ -101,18 +104,20 @@ class MenuViewModel(application: Application) : AndroidViewModel(application) {
         viewModelScope.launch {
             _menuUiState.value = UiState.Loading
             _recommendationsUiState.value = UiState.Loading
-            delay(1000) // Simulasi loading
+            delay(1000) // Simulasi loading dari jaringan
 
+            // Mengambil data menu
             menuRepository.getAllMenuItems()
                 .catch { e -> _menuUiState.value = UiState.Error("Gagal memuat menu: ${e.message}") }
-                .collect { _menuUiState.value = UiState.Success(it) }
+                .collect { items -> _menuUiState.value = UiState.Success(items) }
 
+            // Mengambil data rekomendasi
             menuRepository.getRecommendedItems()
                 .catch { e ->
                     _recommendationsUiState.value =
                         UiState.Error("Gagal memuat rekomendasi: ${e.message}")
                 }
-                .collect { _recommendationsUiState.value = UiState.Success(it) }
+                .collect { items -> _recommendationsUiState.value = UiState.Success(items) }
         }
     }
 
@@ -158,22 +163,27 @@ class MenuViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     fun placeOrder() {
+        // Logika ini nanti akan mengirim pesanan ke Firebase
         if (orderedItems.value.isNotEmpty()) {
             val newOrder = Order(
                 items = orderedItems.value,
                 totalPrice = totalPrice.value
             )
             _ongoingOrders.update { it + newOrder }
+            // Reset keranjang belanja setelah pesanan dibuat
             _quantities.value = emptyMap()
         }
     }
 
     fun completeOrder(order: Order) {
+        // Di aplikasi nyata, ini akan mengubah status pesanan di Firebase
         _ongoingOrders.update { currentOrders -> currentOrders.filterNot { it.id == order.id } }
         _historyOrders.update { currentHistory -> currentHistory + order.copy(status = OrderStatus.COMPLETED) }
     }
 
     fun cancelOrder(order: Order) {
+        // Di aplikasi nyata, ini akan menghapus atau mengubah status pesanan di Firebase
         _ongoingOrders.update { currentOrders -> currentOrders.filterNot { it.id == order.id } }
+        // Mungkin tambahkan ke histori dengan status 'CANCELLED'
     }
 }

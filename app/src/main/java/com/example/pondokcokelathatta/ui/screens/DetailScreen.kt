@@ -32,11 +32,8 @@ fun DetailScreen(
     onBack: () -> Unit,
     menuViewModel: MenuViewModel = viewModel()
 ) {
-    // --- PERBAIKAN ---
-    // Menggunakan favoritesUiState dan menangani statusnya
     val favoritesUiState by menuViewModel.favoritesUiState.collectAsState()
 
-    // Tentukan apakah item ini favorit hanya jika state-nya Success
     val isFavorite = when (val state = favoritesUiState) {
         is UiState.Success -> state.data.any { it.name == menuItem.name }
         else -> false // Anggap tidak favorit saat loading atau error

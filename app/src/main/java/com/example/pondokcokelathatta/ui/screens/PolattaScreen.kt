@@ -28,7 +28,6 @@ fun PolattaScreen(
 ) {
     val menuUiState by menuViewModel.menuUiState.collectAsState()
     val recommendationsUiState by menuViewModel.recommendationsUiState.collectAsState()
-    // --- PERBAIKAN 1: Ambil state kuantitas dengan collectAsState ---
     val quantities by menuViewModel.quantities.collectAsState()
 
     var searchQuery by remember { mutableStateOf("") }
@@ -59,7 +58,6 @@ fun PolattaScreen(
                 }
                 is UiState.Success -> RecommendationSection(state.data, onItemClick)
                 is UiState.Error -> {
-                    // --- PERBAIKAN 2: Panggil fungsi refreshData() yang bersifat public ---
                     ErrorState(message = state.message, onRetry = { menuViewModel.refreshData() })
                 }
             }
@@ -117,7 +115,6 @@ fun PolattaScreen(
             }
             is UiState.Error -> {
                 item {
-                    // --- PERBAIKAN 3: Panggil fungsi refreshData() yang bersifat public ---
                     ErrorState(message = state.message, onRetry = { menuViewModel.refreshData() })
                 }
             }
@@ -129,14 +126,12 @@ fun PolattaScreen(
 private fun MenuCardContainer(
     item: MenuItem,
     menuViewModel: MenuViewModel,
-    // --- PERBAIKAN 4: Terima map kuantitas sebagai parameter ---
     quantities: Map<String, Int>,
     onItemClick: (MenuItem) -> Unit
 ) {
     Box(Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
         MenuCard(
             item = item,
-            // --- PERBAIKAN 5: Gunakan map kuantitas yang sudah diterima ---
             quantity = quantities[item.name] ?: 0,
             onIncrease = { menuViewModel.increaseQuantity(item) },
             onDecrease = { menuViewModel.decreaseQuantity(item) },

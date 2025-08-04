@@ -16,6 +16,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val _authState = MutableStateFlow<AuthState>(AuthState.Unauthenticated)
     val authState: StateFlow<AuthState> = _authState
 
+    // Sealed class untuk merepresentasikan state otentikasi
     sealed class AuthState {
         data class Authenticated(val user: FirebaseUser, val role: String) : AuthState()
         data object Unauthenticated : AuthState()
@@ -24,6 +25,10 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     init {
+        checkCurrentUser()
+    }
+
+    private fun checkCurrentUser() {
         viewModelScope.launch {
             val currentUser = repository.getCurrentUser()
             if (currentUser != null) {
@@ -32,8 +37,13 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                     val role = repository.getUserRole(currentUser.uid)
                     _authState.value = AuthState.Authenticated(currentUser, role)
                 } catch (e: Exception) {
-                    _authState.value = AuthState.Error(e.message ?: "Unknown error")
+                    _authState.value = AuthState.Error(e.message ?: "Gagal mendapatkan role pengguna.")
+                    // Logout jika gagal mendapatkan role untuk menghindari state yang tidak konsisten
+                    repository.signOut()
+                    _authState.value = AuthState.Unauthenticated
                 }
+            } else {
+                _authState.value = AuthState.Unauthenticated
             }
         }
     }
@@ -51,7 +61,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 val role = repository.getUserRole(user.uid)
                 _authState.value = AuthState.Authenticated(user, role)
             } catch (e: Exception) {
-                _authState.value = AuthState.Error(e.message ?: "Unknown error")
+                _authState.value = AuthState.Error(e.message ?: "Login gagal. Periksa kembali email dan password Anda.")
             }
         }
     }
@@ -62,17 +72,22 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
             try {
                 val result = repository.signInWithGoogle(idToken)
                 val user = result.user!!
+                // Periksa apakah ini pengguna baru, jika ya, buat entri di Firestore
+                if (result.additionalUserInfo?.isNewUser == true) {
+                    // Di sini Anda bisa menambahkan logika untuk membuat dokumen baru di Firestore
+                    // untuk pengguna yang baru mendaftar via Google.
+                }
                 val role = repository.getUserRole(user.uid)
                 _authState.value = AuthState.Authenticated(user, role)
             } catch (e: Exception) {
-                _authState.value = AuthState.Error(e.message ?: "Unknown error")
+                _authState.value = AuthState.Error(e.message ?: "Login dengan Google gagal.")
             }
         }
     }
 
     fun getGoogleSignInIntent(): Intent {
         // Ganti dengan Web Client ID Anda dari file google-services.json
-        val webClientId = "308223894643-g5vli7k3ap6024h0k2ejcssncj2m9mja.apps.googleusercontent.com"
+        val webClientId = "308223894643-g5vli7k3ap6024h0k2ejcssncj2m9mja.apps.googleusercontent.com" //
         return repository.getGoogleSignInIntent(webClientId)
     }
 

@@ -22,6 +22,7 @@ class AuthRepository(private val context: Context) {
         auth.signInWithCredential(GoogleAuthProvider.getCredential(idToken, null)).await()
 
     suspend fun getUserRole(uid: String): String {
+        // Di aplikasi nyata, Anda harus menangani kasus di mana dokumen tidak ada
         val document = firestore.collection("users").document(uid).get().await()
         return document.getString("role") ?: "customer"
     }
@@ -32,10 +33,16 @@ class AuthRepository(private val context: Context) {
             .requestEmail()
             .build()
         val googleSignInClient = GoogleSignIn.getClient(context, gso)
+        // Pastikan untuk sign out dulu agar pengguna selalu bisa memilih akun
+        googleSignInClient.signOut()
         return googleSignInClient.signInIntent
     }
 
     fun signOut() {
         auth.signOut()
+        // Juga sign out dari Google jika login menggunakan Google
+        val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build()
+        val googleSignInClient = GoogleSignIn.getClient(context, gso)
+        googleSignInClient.signOut()
     }
 }

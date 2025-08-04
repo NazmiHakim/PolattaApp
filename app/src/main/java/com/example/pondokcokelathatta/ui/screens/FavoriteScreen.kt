@@ -25,7 +25,6 @@ fun FavoriteScreen(
     onChatClick: () -> Unit
 ) {
     val favoritesUiState by menuViewModel.favoritesUiState.collectAsState()
-    // --- PERBAIKAN 1: Ambil state kuantitas dengan collectAsState ---
     val quantities by menuViewModel.quantities.collectAsState()
 
     Column(modifier = modifier.fillMaxSize()) {
@@ -54,11 +53,10 @@ fun FavoriteScreen(
                             bottom = if (showCheckoutButton) 80.dp else 12.dp
                         )
                     ) {
-                        items(favoriteItems) { item -> // Tidak perlu .toList() lagi
+                        items(items = favoriteItems, key = { it.name }) { item ->
                             Box(Modifier.padding(horizontal = 16.dp, vertical = 6.dp)) {
                                 MenuCard(
                                     item = item,
-                                    // --- PERBAIKAN 2: Gunakan state kuantitas yang sudah diambil ---
                                     quantity = quantities[item.name] ?: 0,
                                     onIncrease = { menuViewModel.increaseQuantity(item) },
                                     onDecrease = { menuViewModel.decreaseQuantity(item) },
@@ -71,7 +69,6 @@ fun FavoriteScreen(
             }
             is UiState.Error -> {
                 Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    // --- PERBAIKAN 3: Panggil fungsi refreshData() yang bersifat public ---
                     ErrorState(message = state.message, onRetry = { menuViewModel.refreshData() })
                 }
             }
