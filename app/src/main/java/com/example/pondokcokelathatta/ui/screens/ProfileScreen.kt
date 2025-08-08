@@ -77,7 +77,7 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.width(16.dp))
             Column(modifier = Modifier.weight(1f)) {
                 Text("Nazmi Hakim", fontWeight = FontWeight.Bold, fontSize = 18.sp)
-                Text("woodperson123@gmail.com", color = Color.Gray, fontSize = 14.sp)
+                Text("2310817210012@mhs.ulm.ac.id", color = Color.Gray, fontSize = 14.sp)
                 Text("+6281959001137", color = Color.Gray, fontSize = 14.sp)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text("Poin: 2.475", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)

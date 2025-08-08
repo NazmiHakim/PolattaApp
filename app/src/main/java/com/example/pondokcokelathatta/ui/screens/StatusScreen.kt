@@ -83,7 +83,7 @@ fun StatusScreenContent(
             },
             dismissButton = {
                 Button(onClick = { showCancelDialog = null }) {
-                    Text("Tidak")
+                    Text("Tidak", color = Color.White)
                 }
             }
         )
