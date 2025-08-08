@@ -29,8 +29,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.pondokcokelathatta.model.Order
 import com.example.pondokcokelathatta.model.OrderStatus
+import com.example.pondokcokelathatta.ui.navigation.Screen
 import com.example.pondokcokelathatta.ui.viewmodel.AuthViewModel
 import com.example.pondokcokelathatta.ui.viewmodel.MenuViewModel
 import java.text.NumberFormat
@@ -39,7 +41,8 @@ import java.util.Locale
 @Composable
 fun StatusScreenContent(
     modifier: Modifier = Modifier,
-    menuViewModel: MenuViewModel
+    menuViewModel: MenuViewModel,
+    navController: NavController // Tambahkan NavController
 ) {
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf("Ongoing", "History")
@@ -112,7 +115,11 @@ fun StatusScreenContent(
                 onCancelClick = { order -> showCancelDialog = order },
                 isAdmin = isAdmin
             )
-            1 -> HistoryTab(orders = historyOrders)
+            1 -> HistoryTab(
+                orders = historyOrders,
+                menuViewModel = menuViewModel,
+                navController = navController
+            )
         }
     }
 }
@@ -150,7 +157,11 @@ fun OngoingTab(
 }
 
 @Composable
-fun HistoryTab(orders: List<Order>) {
+fun HistoryTab(
+    orders: List<Order>,
+    menuViewModel: MenuViewModel,
+    navController: NavController
+) {
     if (orders.isEmpty()) {
         EmptyState(
             title = "Belum Ada Histori Pesanan",
@@ -162,9 +173,14 @@ fun HistoryTab(orders: List<Order>) {
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             items(orders) { order ->
-                OrderCard(order = order, actionLabel = "Pesan Lagi", onActionClick = {
-                    // Logika untuk memesan lagi bisa ditambahkan di sini
-                })
+                OrderCard(
+                    order = order,
+                    actionLabel = "Pesan Lagi",
+                    onActionClick = {
+                        menuViewModel.reorder(order)
+                        navController.navigate(Screen.Checkout.route)
+                    }
+                )
             }
         }
     }

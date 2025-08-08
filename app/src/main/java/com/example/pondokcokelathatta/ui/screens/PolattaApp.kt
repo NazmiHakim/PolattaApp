@@ -196,7 +196,8 @@ fun PolattaApp(startDestination: String) {
             ) { innerPadding ->
                 StatusScreenContent(
                     modifier = Modifier.padding(innerPadding),
-                    menuViewModel = menuViewModel
+                    menuViewModel = menuViewModel,
+                    navController = navController // Pass NavController here
                 )
             }
         }

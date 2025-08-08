@@ -186,4 +186,16 @@ class MenuViewModel(application: Application) : AndroidViewModel(application) {
         _ongoingOrders.update { currentOrders -> currentOrders.filterNot { it.id == order.id } }
         // Mungkin tambahkan ke histori dengan status 'CANCELLED'
     }
+
+    // FUNGSI BARU UNTUK "PESAN LAGI"
+    fun reorder(order: Order) {
+        _quantities.update { currentQuantities ->
+            val newQuantities = currentQuantities.toMutableMap()
+            order.items.forEach { (item, quantity) ->
+                val existingQuantity = newQuantities[item.name] ?: 0
+                newQuantities[item.name] = existingQuantity + quantity
+            }
+            newQuantities
+        }
+    }
 }
